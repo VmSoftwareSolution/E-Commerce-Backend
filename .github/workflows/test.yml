@@ -1,0 +1,38 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - stage
+  pull_request:
+    branches:
+      - main
+      - develop
+      - stage
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        java-version: [17]
+        # Puedes agregar más versiones de Java si lo deseas.
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v2
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'adoptopenjdk'
+
+    - name: Build with Maven
+      run: mvn clean install -DskipTests=false
+
+    - name: Run Tests
+      run: mvn test
