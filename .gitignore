@@ -34,3 +34,11 @@ build/
 
 ### node_modules ###
 node_modules/
+
+### Environments ###
+application-dev.properties
+application-stage.properties
+application-prod.properties
+
+### postgres ###
+postgres/
