@@ -22,13 +22,27 @@ public class AuthController implements AuthControllerInterface{
     @Autowired
     private AuthServiceInterface authServiceInterface;
 
+    /**
+    * Endpoint to register a new user.
+    * This method accepts a `CreateUserDto` containing the user details, 
+    * processes the request, and creates a new user in the system.
+    *
+    * @param createUser a {@link CreateUserDto} object containing the user details:
+    *                   - email (String): The user's email address.
+    *                   - password (String): The user's password.
+    *                   - role (Integer): The user's role (e.g., 1 for user, 2 for admin).
+    * @return ResponseEntity<?> with status 201 (Created) if the user is successfully registered, 
+    *         and an empty body.
+    * @throws Exception if there is an error during the user creation process, 
+    *         which will be handled by a global exception handler.
+    */
     @Override
     @PostMapping("/register")
     public ResponseEntity<?> createUser(
         @Valid 
         @RequestBody 
         CreateUserDto createUser
-    ) {
+    ){
         try {
             authServiceInterface.createUser(createUser);
 
@@ -40,5 +54,5 @@ public class AuthController implements AuthControllerInterface{
         }
     }
 
-
+    
 }
