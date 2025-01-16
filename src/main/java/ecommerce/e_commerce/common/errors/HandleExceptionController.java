@@ -2,6 +2,7 @@ package ecommerce.e_commerce.common.errors;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -71,6 +72,24 @@ public class HandleExceptionController {
         errors.put("error", fieldErrors);
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+    * Handles the {@link NoSuchElementException} exception globally within the application.
+    * This exception is typically thrown when a requested resource (e.g., a role) cannot be found 
+    * in the system, usually by ID or name.
+    * 
+    * @param ex The {@link NoSuchElementException} that is thrown when a role (or other entity) 
+    *           cannot be found in the database or data source.
+    * 
+    * @return A {@link ResponseEntity} containing a map of error details, including the exception 
+    *         message, and a {@link HttpStatus} of {@link HttpStatus#NOT_FOUND} (404) indicating 
+    *         that the requested resource was not found.
+    */
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException ex) {
+        errors.put("error", ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 
 }

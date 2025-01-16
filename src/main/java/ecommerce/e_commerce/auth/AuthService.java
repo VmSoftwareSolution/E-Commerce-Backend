@@ -1,11 +1,15 @@
 package ecommerce.e_commerce.auth;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ecommerce.e_commerce.auth.dto.CreateUserDto;
 import ecommerce.e_commerce.common.interfaces.auth.AuthServiceInterface;
+import ecommerce.e_commerce.common.interfaces.roles.RolesServiceInterface;
+import ecommerce.e_commerce.roles.entity.RolesEntity;
 import ecommerce.e_commerce.user.entity.UserEntity;
 import ecommerce.e_commerce.user.repository.UserRepository;
 
@@ -14,6 +18,9 @@ public class AuthService implements AuthServiceInterface {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RolesServiceInterface rolesServiceInterface;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -39,7 +46,10 @@ public class AuthService implements AuthServiceInterface {
         user.setPassword(//Encode password using spring security method
             encoder.encode(createUser.password)
         );
-        user.setRole(createUser.role);
+        
+        //Find roles by name = "guest", if not exist return a error
+        Optional<RolesEntity> foundRoles = rolesServiceInterface.findRolesByNameOrFail("Guest");
+        user.setRole(foundRoles.get());
 
         return userRepository.save(user);
     }

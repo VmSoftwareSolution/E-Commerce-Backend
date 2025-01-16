@@ -1,5 +1,8 @@
 package ecommerce.e_commerce.roles;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,4 +43,22 @@ public class RolesService implements RolesServiceInterface {
 
 
     
+    //This methods find by roles name and return data or null 
+    public Optional<RolesEntity> findRolesByName(String name){
+        return rolesRepository.findRolesByName(name);
+    }
+
+    /**
+    * This method find by roles name and return dat, but if data is empty
+    * @return a NoSuchElementException
+    */
+    public Optional<RolesEntity> findRolesByNameOrFail(String name){
+        Optional<RolesEntity> foundROles = this.findRolesByName(name);
+
+        if(foundROles.isEmpty()){
+            throw  new NoSuchElementException("Roles with name = " + name + " not found.");
+        }
+
+        return foundROles;
+    }
 }
