@@ -1,10 +1,16 @@
 package ecommerce.e_commerce.roles.entity;
 
+import java.util.List;
+
+import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,8 +27,13 @@ public class RolesEntity {
     @Column(nullable = true)
     private String description;
 
-    @Column(nullable = false)
-    private int permission;//COMEBACK: create relationship with permission table
+    @ManyToMany// Type relationship
+    @JoinTable(//Create table aux
+        name = "roles_permissions",//name table ux
+        joinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"),//relationship idRole
+        inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id")//relationship idPermission
+    )
+    private List<PermissionEntity> permission;
 
     //Methods Getters and Setter
     public Long getId() {
@@ -49,14 +60,11 @@ public class RolesEntity {
         this.description = description;
     }
 
-    public int getPermission() {
+    public List<PermissionEntity> getPermission() {
         return permission;
     }
 
-    public void setPermission(int permission) {
+    public void setPermission(List<PermissionEntity> permission) {
         this.permission = permission;
-    }
-
-    //Methods Get and Setter
-    
+    }    
 }

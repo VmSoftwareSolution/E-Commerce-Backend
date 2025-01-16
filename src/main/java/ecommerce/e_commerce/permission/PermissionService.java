@@ -1,5 +1,8 @@
 package ecommerce.e_commerce.permission;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,4 +39,31 @@ public class PermissionService implements PermissionServiceInterface {
 
         return permissionRepository.save(permissionEntity);
     }
+
+
+    //This method find by id permission, and return data or empty
+    @Override
+    public Optional<PermissionEntity> findById(Long id) {
+        return permissionRepository.findById(id);
+    }
+
+
+    /**
+    * This method find by permission id and return data, if data is empty
+    * @return a NoSuchElementException 
+    */
+    @Override
+    public Optional<PermissionEntity> findByIdOrFail(Long id) {
+        Optional<PermissionEntity> foundPermission = this.findById(id);
+
+        if(foundPermission.isEmpty()){
+            throw new NoSuchElementException("Permission with id = " + id + " not found.");
+        }
+
+        return foundPermission;
+    }
+
+
+
+    
 }

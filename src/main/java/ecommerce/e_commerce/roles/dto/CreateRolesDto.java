@@ -1,7 +1,9 @@
 package ecommerce.e_commerce.roles.dto;
 
-import jakarta.validation.constraints.Min;
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class CreateRolesDto {
     
@@ -10,6 +12,6 @@ public class CreateRolesDto {
 
     public String description;
 
-    @Min(value = 1, message = "Permission must be greater than zero")
-    public int permission;
+    @Size(min = 1, message = "At least one permission is required")
+    public List<Long> permission;
 }
