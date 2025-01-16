@@ -31,7 +31,7 @@ public class RolesController implements RolesControllerInterface {
     * @param createRolesDto a {@link CreateRolesDto} object containing the roles details:
     *                       - name (String): The role's name
     *                       - description (String): The roles's description, is optional
-    *                       - permission (Integer): The roles's permission id (e.g., 1 for create.all, 2 read.all)
+    *                       - permission (List<Long>): The roles's permission id (e.g., 1 for create.all, 2 read.all)
     *
     * @return ResponseEntity<?> with status 201 (create) if the roles is successfully registered, and an empty body
     *
