@@ -44,6 +44,7 @@ public class RolesService implements RolesServiceInterface {
 
     
     //This methods find by roles name and return data or null 
+    @Override
     public Optional<RolesEntity> findRolesByName(String name){
         return rolesRepository.findRolesByName(name);
     }
@@ -52,6 +53,7 @@ public class RolesService implements RolesServiceInterface {
     * This method find by roles name and return dat, but if data is empty
     * @return a NoSuchElementException
     */
+    @Override
     public Optional<RolesEntity> findRolesByNameOrFail(String name){
         Optional<RolesEntity> foundROles = this.findRolesByName(name);
 
