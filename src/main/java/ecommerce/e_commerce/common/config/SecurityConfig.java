@@ -1,5 +1,6 @@
 package ecommerce.e_commerce.common.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig  {
 
+    @Value("${app.api-prefix}")
+    private String apiPrefix;
     /**
     * Configures the web application's security, managing access to endpoints
     * and Cross-Site Request Forgery (CSRF) protection settings. The configuration
@@ -28,13 +31,10 @@ public class SecurityConfig  {
         //Allow access without authorization
         http
             .authorizeHttpRequests((authz) -> authz
-                .requestMatchers(HttpMethod.POST,"/auth/register").permitAll()//Without authorization
-                .requestMatchers(HttpMethod.GET,"auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, apiPrefix+"/auth/register").permitAll()//Without authorization
+                .requestMatchers(HttpMethod.GET,apiPrefix+"/auth/login").permitAll()
                 .anyRequest().authenticated()//Protected all other endpoints
-            ).csrf((csrf) -> csrf
-                .ignoringRequestMatchers(//Disable CSRF for the following endpoints
-                    "/auth/register",
-                    "/auth/login"));
+            ).csrf((csrf) -> csrf.disable());//Disable CSRF for the following endpoints
 
             return http.build();
     }

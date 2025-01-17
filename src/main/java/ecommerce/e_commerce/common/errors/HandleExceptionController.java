@@ -29,6 +29,7 @@ public class HandleExceptionController {
      * @return An HTTP response with a map of errors in the body, with a 400 (Bad Request) status code,
      *         indicating a data integrity violation occurred.
      */
+    @SuppressWarnings("null")
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
 
