@@ -31,8 +31,9 @@ public class SecurityConfig  {
         //Allow access without authorization
         http
             .authorizeHttpRequests((authz) -> authz
-                .requestMatchers(HttpMethod.POST, apiPrefix+"/auth/register").permitAll()//Without authorization
-                .requestMatchers(HttpMethod.GET,apiPrefix+"/auth/login").permitAll()
+                .requestMatchers("/swagger-ui/**", apiPrefix+"/v3/api-docs/**").permitAll()//Without authorization swagger
+                .requestMatchers(HttpMethod.POST, apiPrefix+"/auth/register").permitAll()//Without authorization register
+                .requestMatchers(HttpMethod.GET,apiPrefix+"/auth/login").permitAll()//Without authorization login
                 .anyRequest().authenticated()//Protected all other endpoints
             ).csrf((csrf) -> csrf.disable());//Disable CSRF for the following endpoints
 
