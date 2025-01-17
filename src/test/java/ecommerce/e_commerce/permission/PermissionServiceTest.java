@@ -59,7 +59,7 @@ public class PermissionServiceTest {
     }
 
     @Test
-    public void testSavePermissionWithDescription(){
+    public void testSavePermissionWithoutDescription(){
         //Initialize variable
         CreatePermissionDto createPermissionDto 
             = PermissionMockData.createPermissionDto();

@@ -1,5 +1,8 @@
 package ecommerce.e_commerce.permission.mockData;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ecommerce.e_commerce.permission.dto.CreatePermissionDto;
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 
@@ -44,5 +47,27 @@ public class PermissionMockData {
         entity.setDescription(createPermissionDto.description);
 
         return entity;
+    }
+
+    /**
+    * Creates a list of {@link PermissionEntity} with a single permission object.
+    * This method generates a permission entity using the provided ID, and assigns
+    * default values for name and description.
+    *
+    * @param permissionId the ID to assign to the created permission entity.
+    * @return a list containing one {@link PermissionEntity} instance with the provided ID.
+    */
+    public static List<PermissionEntity> createPermissionEntity(Long permissionId){
+       // Create a new PermissionEntity object
+        PermissionEntity permission = new PermissionEntity();
+        permission.setId(permissionId); // Set the ID
+        permission.setName("USER.WRITE.ALL");
+        permission.setDescription("create and update all user");
+
+        // Create a list and add the permission entity to it
+        List<PermissionEntity> permissions = new ArrayList<>();
+        permissions.add(permission);
+
+        return permissions; // Return the list of permissions
     }
 }
