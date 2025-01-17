@@ -31,6 +31,7 @@ public class SecurityConfig  {
         //Allow access without authorization
         return http
             .authorizeHttpRequests((authz) -> authz
+                .requestMatchers(apiPrefix+"/permission").permitAll()//FIX: Delete this, when using JWT
                 .requestMatchers("/swagger-ui/**", apiPrefix+"/v3/api-docs/**").permitAll()//Without authorization swagger
                 .requestMatchers(HttpMethod.POST, apiPrefix+"/auth/register").permitAll()//Without authorization register
                 .requestMatchers(HttpMethod.GET,apiPrefix+"/auth/login").permitAll()//Without authorization login
