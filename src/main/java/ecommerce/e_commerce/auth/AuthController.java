@@ -12,10 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 import ecommerce.e_commerce.auth.dto.CreateUserDto;
 import ecommerce.e_commerce.common.interfaces.auth.AuthControllerInterface;
 import ecommerce.e_commerce.common.interfaces.auth.AuthServiceInterface;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("auth")
+@Tag(name = "auth")
 @Validated
 public class AuthController implements AuthControllerInterface{
     
@@ -36,6 +42,29 @@ public class AuthController implements AuthControllerInterface{
     * @throws Exception if there is an error during the user creation process, 
     *         which will be handled by a global exception handler.
     */
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "201",
+            description = "User successfully created",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid input data",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Key (email)=(victormmosquerag@gmail.com) already exists.\" }")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Unexpected Error\" }")
+            )
+        )
+    })
     @Override
     @PostMapping("/register")
     public ResponseEntity<?> createUser(

@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import ecommerce.e_commerce.common.interfaces.permission.PermissionControllerInterface;
 import ecommerce.e_commerce.common.interfaces.permission.PermissionServiceInterface;
 import ecommerce.e_commerce.permission.dto.CreatePermissionDto;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("permission")
+@Tag(name = "permission")
 @Validated
 public class PermissionController implements PermissionControllerInterface{
     
@@ -39,6 +45,29 @@ public class PermissionController implements PermissionControllerInterface{
     * @throws Exception if there is an error during the user creation process, 
     *         which will be handled by a global exception handler.  
     */
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "201",
+            description = "Permission successfully created",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid input data",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Key (name)=(Write.all) already exists.\" }")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Unexpected Error\" }")
+            )
+        )
+    })
     @Override
     @PostMapping
     public ResponseEntity<?> createPermission(

@@ -1,6 +1,6 @@
 # Ecommerce_Backend
 [![Maven Version](https://img.shields.io/badge/Maven-4.0.0-brightblue.svg)](https://maven.apache.org/)
-[![Spring Boot Version](https://img.shields.io/badge/Spring_Boot-3.4.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot Version](https://img.shields.io/badge/Spring_Boot-3.3.7-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Java Version](https://img.shields.io/badge/Java-17-red.svg)](https://www.oracle.com/java/)
 
 This repository is for creating to e-commerce platform, that with a any type things, basically it a template e-commerce platform
@@ -11,6 +11,7 @@ This repository is for creating to e-commerce platform, that with a any type thi
 - [Backend Setup and Dependencies](#backend-setup-and-dependencies)
 - [Commit Message Structure](#commit-message-structure)
 - [Environment](#environments)
+- [Documentation Swagger](#documentation-swagger)
 
 ## Branch Naming Conventions
 
@@ -159,3 +160,11 @@ Here are some examples of correctly formatted commit messages:
 
 - **`Hotfix Commit`**: (HOTFIX): Fix crash on login screen
 
+## Documentation Swagger
+The project includes an auto-generated API documentation using Swagger. Swagger provides a comprehensive interface for exploring and testing the available endpoints, their inputs, and responses. This documentation is useful for developers and testers to understand the API structure and ensure proper integration.
+
+To access the Swagger UI, start the application and navigate to the following URL in your browser:
+
+```
+http://localhost:8080/swagger-ui/index.html#/
+```
