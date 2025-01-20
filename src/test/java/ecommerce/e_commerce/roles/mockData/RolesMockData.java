@@ -2,6 +2,7 @@ package ecommerce.e_commerce.roles.mockData;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import ecommerce.e_commerce.roles.dto.CreateRolesDto;
@@ -45,6 +46,23 @@ public class RolesMockData {
         role.setPermission(permission);
 
         return role;
+    }
+
+    /**
+     * Creates an {@link Optional} containing a {@link RolesEntity} object.
+     * The {@link RolesEntity} instance is initialized with default values:
+     *
+     * @return an {@link Optional} containing a pre configured {@link RolesEntity} object
+     */
+    public static Optional<RolesEntity> rolesEntityOptionalList(){
+        RolesEntity rolesEntity = new RolesEntity();
+
+        rolesEntity.setName("Guest");
+        rolesEntity.setDescription("user someone permission");
+
+        Optional<RolesEntity> optionalEntity = Optional.of(rolesEntity);
+
+        return optionalEntity;
     }
 
 }
