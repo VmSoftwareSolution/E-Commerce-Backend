@@ -12,6 +12,7 @@ This repository is for creating to e-commerce platform, that with a any type thi
 - [Commit Message Structure](#commit-message-structure)
 - [Environment](#environments)
 - [Documentation Swagger](#documentation-swagger)
+- [Test](#test)
 
 ## Branch Naming Conventions
 
@@ -167,4 +168,13 @@ To access the Swagger UI, start the application and navigate to the following UR
 
 ```
 http://localhost:8080/swagger-ui/index.html#/
+```
+
+## Test
+To ensure the application works as intended and to maintain code quality, unit and integration tests are implemented in this project. Maven is used as the build tool for running the tests.
+
+How to Run All Tests
+To execute all the tests in the project, use the following Maven command:
+```
+mvn test
 ```
