@@ -8,7 +8,13 @@ import jakarta.validation.Valid;
 
 public interface AuthControllerInterface {
 
-  public ResponseEntity<?> createUser(
+  public ResponseEntity<?> registerUser(
+    @Valid
+    @RequestBody
+    CreateUserDto createUser
+  );  
+
+  public ResponseEntity<?> loginUser(
     @Valid
     @RequestBody
     CreateUserDto createUser

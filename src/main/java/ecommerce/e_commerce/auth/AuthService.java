@@ -3,12 +3,16 @@ package ecommerce.e_commerce.auth;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ecommerce.e_commerce.auth.dto.CreateUserDto;
 import ecommerce.e_commerce.common.interfaces.auth.AuthServiceInterface;
 import ecommerce.e_commerce.common.interfaces.roles.RolesServiceInterface;
+import ecommerce.e_commerce.common.jwt.JwtService;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
 import ecommerce.e_commerce.user.entity.UserEntity;
 import ecommerce.e_commerce.user.repository.UserRepository;
@@ -24,6 +28,12 @@ public class AuthService implements AuthServiceInterface {
 
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
 
 
     /**
@@ -54,4 +64,25 @@ public class AuthService implements AuthServiceInterface {
         return userRepository.save(user);
     }
     
+    /**
+    * Logs in a user by authenticating their email and password.
+    * This method validates the provided credentials using Spring Security's AuthenticationManager, 
+    * and if the credentials are valid, it generates and returns a JWT token for authentication.
+    *
+    * @param createUser a {@link CreateUserDto} object containing the user's login details:
+    *                   - email (String): The user's email address.
+    *                   - password (String): The user's password.
+    * @return String containing the JWT token, which can be used for authenticating future requests.
+    * @throws Exception if the credentials are invalid or any error occurs during authentication, 
+    *         which will be handled by a global exception handler.
+    */
+    public String loginUser(CreateUserDto createUser) {
+        //Authenticate the user's email and password using Spring Security's AuthenticationManager
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(createUser.email, createUser.password));
+        //Retrieve the user details from the repository using the email address
+        UserDetails user=userRepository.findByEmail(createUser.email).orElseThrow();
+
+        //Generate token and return 
+        return jwtService.getToken(user);
+    }
 }
