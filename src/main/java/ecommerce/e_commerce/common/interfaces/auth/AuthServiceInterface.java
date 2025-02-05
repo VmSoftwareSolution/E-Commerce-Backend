@@ -7,4 +7,5 @@ import ecommerce.e_commerce.user.entity.UserEntity;
 public interface AuthServiceInterface {
 
   public UserEntity createUser(CreateUserDto createUser);  
+  public String loginUser(CreateUserDto createUser);
 } 

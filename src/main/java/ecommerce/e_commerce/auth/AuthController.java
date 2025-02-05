@@ -67,7 +67,7 @@ public class AuthController implements AuthControllerInterface{
     })
     @Override
     @PostMapping("/register")
-    public ResponseEntity<?> createUser(
+    public ResponseEntity<?> registerUser(
         @Valid 
         @RequestBody 
         CreateUserDto createUser
@@ -83,5 +83,61 @@ public class AuthController implements AuthControllerInterface{
         }
     }
 
+    /**
+    * Endpoint to log in a user.
+    * This method accepts a `CreateUserDto` containing the user's email and password, 
+    * validates the credentials, and returns a JWT token if the login is successful.
+    *
+    * @param createUser a {@link CreateUserDto} object containing the user's login details:
+    *                   - email (String): The user's email address.
+    *                   - password (String): The user's password.
+    * @return ResponseEntity<?> with status 200 (OK) and a JWT token in the response body if login is successful.
+    *         The token is used for subsequent authentication requests.
+    * @throws Exception if there is an error during the login process (e.g., invalid credentials or server error), 
+    *         which will be handled by a global exception handler.
+    */
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "User successfully logged in, token returned",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"token\": \"JWT-TOKEN-HERE\" }")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid login credentials",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Invalid email or password\" }")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Unexpected Error\" }")
+            )
+        )
+    })
+    @Override
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(
+        @Valid 
+        @RequestBody 
+        CreateUserDto createUser
+    ){
+        try {
+            String token =authServiceInterface.loginUser(createUser);
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(token);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
     
 }

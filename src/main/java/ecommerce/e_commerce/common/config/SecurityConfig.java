@@ -1,18 +1,27 @@
 package ecommerce.e_commerce.common.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import ecommerce.e_commerce.common.jwt.JwtAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig  {
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Autowired
+    private AuthenticationProvider authProvider;
 
     @Value("${app.api-prefix}")
     private String apiPrefix;
@@ -30,23 +39,18 @@ public class SecurityConfig  {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         //Allow access without authorization
         return http
+            .csrf(csrf ->
+                csrf.disable())
             .authorizeHttpRequests((authz) -> authz
-                .requestMatchers(apiPrefix+"/permission").permitAll()//FIX: Delete this, when using JWT
-                .requestMatchers(apiPrefix+"/roles").permitAll()//FIX: Delete this, whe using JWT
                 .requestMatchers("/swagger-ui/**", apiPrefix+"/v3/api-docs/**").permitAll()//Without authorization swagger
-                .requestMatchers(HttpMethod.POST, apiPrefix+"/auth/register").permitAll()//Without authorization register
-                .requestMatchers(HttpMethod.GET,apiPrefix+"/auth/login").permitAll()//Without authorization login
+                .requestMatchers(apiPrefix+"/auth/**").permitAll()//Without authorization register
                 .anyRequest().authenticated())//Protected all other endpoints
-            
-            .csrf((csrf) -> csrf.disable())//Disable CSRF for the all endpoints
+            .sessionManagement(sessionManager->
+                sessionManager 
+                  .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authProvider)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
-
-    }
-
-    //Encoding the password 
-    @Bean
-    PasswordEncoder encoder(){
-        return new BCryptPasswordEncoder();
-    }
+    }   
 }
     

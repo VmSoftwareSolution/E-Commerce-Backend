@@ -51,4 +51,20 @@ public class AuthControllerTest {
             .status()
             .isCreated()); 
     }
+
+    @Test
+    public void testLoginUserSuccessfully() throws Exception{
+        String json = objectMapper.writeValueAsString(AuthMockData.createUserDto());
+
+        Mockito.when(
+            authServiceInterface.loginUser(any())
+        ).thenReturn(AuthMockData.generateTokenAdmin());
+
+        mockMvc.perform(MockMvcRequestBuilders.post(apiPrefix+"/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+            .andExpect(MockMvcResultMatchers
+            .status()
+            .isOk()); 
+    }
 }
