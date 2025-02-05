@@ -133,7 +133,7 @@ public class AuthController implements AuthControllerInterface{
             String token =authServiceInterface.loginUser(createUser);
 
             return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .body(token);
         } catch (Exception e) {
             throw e;
