@@ -35,19 +35,19 @@ public class HandleExceptionController {
 
         String property = null;
 
-        //NOTE: Cannot be null into database
+        //Cannot be null into database
         if (ex.getRootCause() instanceof org.hibernate.PropertyValueException) {
             property = ((org.hibernate.PropertyValueException) ex.getRootCause()).getPropertyName();
             errors.put(property, "The " + property + " files ir required and cannot be null");
         }
 
-        //NOTE: Already exist into database
+        //Already exist into database
         if(ex.getRootCause() instanceof ConstraintViolationException){
             property = ex.getCause().getMessage();
 
             errors.put("error", property);
         
-        }else {//NOTE: Default error message if not handle
+        }else {//Default error message if not handle
             errors.put("error", "Data integrity violations: " + ex.getRootCause().getMessage());
         }
         
@@ -93,4 +93,22 @@ public class HandleExceptionController {
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 
+    /**
+    * Handles {@link IllegalArgumentException} exceptions globally within the application.
+    *
+    * This exception is typically thrown when a method receives an argument that is inappropriate 
+    * or invalid for its operation. It can occur in cases such as invalid enum values, 
+    * incorrect query parameters, or logic validation failures.
+    *
+    * @param ex The {@link IllegalArgumentException} thrown when an invalid argument is detected in the application logic.
+    * 
+    * @return A {@link ResponseEntity} containing a map with an error message describing the issue,
+    *         and a {@link HttpStatus} of {@link HttpStatus#BAD_REQUEST} (400), indicating that 
+    *         the client provided an invalid request parameter or argument.
+    */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> IllegalArgumentException(IllegalArgumentException ex) {
+        errors.put("error", ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
 }
