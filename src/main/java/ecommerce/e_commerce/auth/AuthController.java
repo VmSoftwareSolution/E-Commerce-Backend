@@ -1,5 +1,8 @@
 package ecommerce.e_commerce.auth;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -132,9 +135,12 @@ public class AuthController implements AuthControllerInterface{
         try {
             String token =authServiceInterface.loginUser(createUser);
 
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+
             return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(token);
+                .body(response);
         } catch (Exception e) {
             throw e;
         }
