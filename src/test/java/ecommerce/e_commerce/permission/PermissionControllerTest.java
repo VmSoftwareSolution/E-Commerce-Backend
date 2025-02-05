@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ecommerce.e_commerce.auth.mockData.AuthMockData;
 import ecommerce.e_commerce.common.interfaces.permission.PermissionServiceInterface;
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import ecommerce.e_commerce.permission.mockData.PermissionMockData;
@@ -27,6 +28,7 @@ public class PermissionControllerTest {
     @Value("${app.api-prefix}")
     private String apiPrefix;
 
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -36,15 +38,18 @@ public class PermissionControllerTest {
     @MockBean
     private PermissionServiceInterface permissionServiceInterface;
 
+
     @Test
     public void testSavePermissionSuccessfully() throws Exception{
         String json = objectMapper.writeValueAsString(PermissionMockData.createPermissionDto());
 
         Mockito.when(permissionServiceInterface.createPermission(any())).thenReturn(new PermissionEntity());
 
+        String token = AuthMockData.generateTokenAdmin(); 
+
         mockMvc.perform(MockMvcRequestBuilders.post(apiPrefix+"/permission")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
+            .content(json).header("Authorization", "Bearer " + token))
             .andExpect(MockMvcResultMatchers
             .status()
             .isCreated()); 

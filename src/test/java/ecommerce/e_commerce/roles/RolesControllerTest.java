@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ecommerce.e_commerce.auth.mockData.AuthMockData;
 import ecommerce.e_commerce.common.interfaces.roles.RolesServiceInterface;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
 import ecommerce.e_commerce.roles.mockData.RolesMockData;
@@ -43,9 +44,12 @@ public class RolesControllerTest {
     
         Mockito.when(rolesServiceInterface.createRoles(any())).thenReturn(new RolesEntity());
      
+        String token = AuthMockData.generateTokenAdmin();
+
         mockMvc.perform(MockMvcRequestBuilders.post(apiPrefix+"/roles")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
+            .content(json)
+            .header("Authorization", "Bearer " + token))
             .andExpect(MockMvcResultMatchers
             .status()
             .isCreated()); 
