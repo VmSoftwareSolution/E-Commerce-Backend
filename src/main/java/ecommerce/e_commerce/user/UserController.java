@@ -11,12 +11,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.e_commerce.common.interfaces.user.UserControllerInterface;
 import ecommerce.e_commerce.common.interfaces.user.UserServiceInterface;
 import ecommerce.e_commerce.user.dto.PaginationUserDto;
+import ecommerce.e_commerce.user.dto.UpdateUserDto;
+import ecommerce.e_commerce.user.entity.UserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -132,6 +137,92 @@ public class UserController implements UserControllerInterface {
             return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(foundUser);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+
+
+    /**
+    * Updates an existing user with the provided data.
+    * <p>
+     * This endpoint requires the authority {@code 'write.all'} to access. The method will update a user based on
+    * the provided user ID and the new values for email, password, and role. If the user is not found, an error will be thrown.
+    * </p>
+    *
+    * @param id The ID of the user to update.
+    * @param updateUserDto The DTO containing the new values for the user fields (email, password, role).
+    * @return A {@link ResponseEntity} containing the updated user entity with HTTP status 200 (OK).
+    * @throws Exception if an unexpected error occurs during processing.
+    */
+    @Operation(
+        summary = "Update a user",
+        description = "Updates an existing user with the provided data. Requires 'write.all' authority."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "User successfully updated",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = """
+                    {
+                      "id": 1,
+                      "email": "updated.email@example.com",
+                      "role": {
+                        "id": 2,
+                        "name": "Admin"
+                      }
+                    }
+                    """)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid input data",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Invalid email format or role ID.\"}")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden - insufficient permissions"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"User with the given ID not found.\"}")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Unexpected Error\"}")
+            )
+        )
+    })
+    @Override
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('write.all')")
+    public ResponseEntity<?> updateUser(
+        @PathVariable Long id,
+        @Valid
+        @RequestBody 
+        UpdateUserDto updateUserDto
+    ) {
+        try {
+            UserEntity updateUser 
+                = userServiceInterface.updateUser(id, updateUserDto);
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(updateUser);   
         } catch (Exception e) {
             throw e;
         }

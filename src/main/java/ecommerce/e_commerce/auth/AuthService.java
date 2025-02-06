@@ -1,7 +1,5 @@
 package ecommerce.e_commerce.auth;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -58,8 +56,8 @@ public class AuthService implements AuthServiceInterface {
         );
         
         //Find roles by name = "guest", if not exist return a error
-        Optional<RolesEntity> foundRoles = rolesServiceInterface.findRolesByNameOrFail("Guest");
-        user.setRole(foundRoles.get());
+        RolesEntity foundRoles = rolesServiceInterface.findRolesByNameOrFail("Guest");
+        user.setRole(foundRoles);
 
         return userRepository.save(user);
     }

@@ -57,9 +57,14 @@ public class RolesService implements RolesServiceInterface {
         return rolesRepository.save(rolesEntity);
     }
 
-
+    //Bases methods
     
-    //This methods find by roles name and return data or null 
+    /**
+    * Finds a role by its name and returns the result or null if not found.
+    * 
+    * @param name The name of the role to find.
+    * @return An Optional containing the role if found, otherwise an empty Optional.
+    */
     @Override
     public Optional<RolesEntity> findRolesByName(String name){
         return rolesRepository.findRolesByName(name);
@@ -70,13 +75,36 @@ public class RolesService implements RolesServiceInterface {
     * @return a NoSuchElementException
     */
     @Override
-    public Optional<RolesEntity> findRolesByNameOrFail(String name){
-        Optional<RolesEntity> foundROles = this.findRolesByName(name);
-
-        if(foundROles.isEmpty()){
-            throw  new NoSuchElementException("Roles with name = " + name + " not found.");
-        }
-
-        return foundROles;
+    public RolesEntity findRolesByNameOrFail(String name){
+        return this.findRolesByName(name)
+            .orElseThrow(()-> 
+                new NoSuchElementException("Roles with name = " + name + " not found.")
+            );
     }
+
+    /**
+    * Finds a role by its ID.
+    * 
+    * @param id The ID of the role to find.
+    * @return An Optional containing the role if found, otherwise an empty Optional.
+    */
+    @Override
+    public Optional<RolesEntity> findById(Long id) {
+        return rolesRepository.findById(id);
+    }
+
+    /**
+    * Finds a role by its ID and throws an exception if not found.
+    * 
+    * @param id The ID of the role to find.
+    * @return The found role entity.
+    * @throws NoSuchElementException If no role with the specified ID is found.
+    */
+    @Override
+    public RolesEntity findByIdOrFail(Long id) {
+        return this.findById(id)
+            .orElseThrow(()-> new NoSuchElementException("Role with id "+ id + " not found"));
+    }
+
+    
 }

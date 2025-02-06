@@ -36,7 +36,7 @@ public class RolesMockData {
      * @param permission a list of {@link PermissionEntity} associated with the role.
      * @return a {@link RolesEntity} instance populated with the provided data.
      */
-    public static RolesEntity roleEntity(
+    public static RolesEntity createRoleEntity(
         CreateRolesDto dto,
         List<PermissionEntity> permission
     ){
@@ -54,15 +54,14 @@ public class RolesMockData {
      *
      * @return an {@link Optional} containing a pre configured {@link RolesEntity} object
      */
-    public static Optional<RolesEntity> rolesEntityOptionalList(){
+    public static RolesEntity rolesEntityList(){
         RolesEntity rolesEntity = new RolesEntity();
 
+        rolesEntity.setId(1L);
         rolesEntity.setName("Guest");
         rolesEntity.setDescription("user someone permission");
 
-        Optional<RolesEntity> optionalEntity = Optional.of(rolesEntity);
-
-        return optionalEntity;
+        return rolesEntity;
     }
 
 }

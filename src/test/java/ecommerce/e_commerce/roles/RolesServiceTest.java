@@ -54,7 +54,7 @@ public class RolesServiceTest {
             PermissionMockData.createPermissionEntity(createRolesDto.permission.get(0));
 
         RolesEntity roleEntity 
-            = RolesMockData.roleEntity(createRolesDto, permissionEntity);
+            = RolesMockData.createRoleEntity(createRolesDto, permissionEntity);
 
         //Valid if permission id exist
         when(permissionServiceInterface
@@ -93,7 +93,7 @@ public class RolesServiceTest {
             PermissionMockData.createPermissionEntity(createRolesDto.permission.get(0));
 
         RolesEntity roleEntity 
-            = RolesMockData.roleEntity(createRolesDto, permissionEntity);
+            = RolesMockData.createRoleEntity(createRolesDto, permissionEntity);
 
         //Valid if permission id exist
         when(permissionServiceInterface
