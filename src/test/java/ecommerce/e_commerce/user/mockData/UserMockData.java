@@ -2,10 +2,13 @@ package ecommerce.e_commerce.user.mockData;
 
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
+import ecommerce.e_commerce.roles.mockData.RolesMockData;
+import ecommerce.e_commerce.user.dto.UpdateUserDto;
 import ecommerce.e_commerce.user.entity.UserEntity;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 public class UserMockData {
 
@@ -67,5 +70,36 @@ public class UserMockData {
             user.setRole((RolesEntity) userMap.get("role"));
             return user;
         }).collect(Collectors.toList());
+    }
+
+    /**
+    * Creates an UpdateUserDto object with mock data.
+    *
+    * @return an UpdateUserDto instance containing mock user update data
+    */
+    public static UpdateUserDto updateUserDto(){
+        UpdateUserDto updateUserDto = new UpdateUserDto();
+
+        updateUserDto.email="jhoeDoe@gmail.com";
+        updateUserDto.password="SecretPassword";
+        updateUserDto.role=1L;
+
+        return updateUserDto;
+    }
+
+    /**
+    * Creates a UserEntity object with mock data.
+    *
+    * @return a UserEntity instance containing mock user entity data
+    */
+    public static UserEntity updateUserEntity(){
+        UserEntity entity = new UserEntity();
+
+        entity.setId(1L);
+        entity.setEmail("jhoeDoe@gmail.com");
+        entity.setPassword("SecretPassword");
+        entity.setRole(RolesMockData.rolesEntityList());
+
+        return entity;
     }
 }

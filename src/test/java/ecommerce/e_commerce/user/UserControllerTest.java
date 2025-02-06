@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ecommerce.e_commerce.auth.mockData.AuthMockData;
 import ecommerce.e_commerce.common.interfaces.user.UserServiceInterface;
@@ -29,6 +30,8 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private UserServiceInterface userServiceInterface;
@@ -40,11 +43,31 @@ public class UserControllerTest {
 
         String token = AuthMockData.generateTokenAdmin();
         
-         mockMvc.perform(MockMvcRequestBuilders.get(apiPrefix+"/users")
+        mockMvc.perform(MockMvcRequestBuilders.get(apiPrefix+"/users")
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + token))
             .andExpect(MockMvcResultMatchers
             .status()
             .isOk()); 
     }
+
+    @Test
+    public void testUpdateUser() throws Exception{
+        Long id = 1L;
+        String json = objectMapper.writeValueAsString(UserMockData.updateUserDto());
+
+        Mockito.when(userServiceInterface.updateUser(id, UserMockData.updateUserDto()))
+            .thenReturn(UserMockData.updateUserEntity());
+
+        String token = AuthMockData.generateTokenAdmin();
+        
+        mockMvc.perform(MockMvcRequestBuilders.put(apiPrefix+"/users/"+id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + token)
+            .content(json))
+            .andExpect(MockMvcResultMatchers
+            .status()
+            .isOk()); 
+    }
+
 }
