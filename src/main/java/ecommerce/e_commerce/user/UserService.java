@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import ecommerce.e_commerce.common.interfaces.roles.RolesServiceInterface;
 import ecommerce.e_commerce.common.interfaces.user.UserServiceInterface;
-import ecommerce.e_commerce.roles.RolesService;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
 import ecommerce.e_commerce.user.dto.PaginationUserDto;
 import ecommerce.e_commerce.user.dto.UpdateUserDto;
@@ -33,7 +33,7 @@ public class UserService implements UserServiceInterface {
     private PasswordEncoder encoder;
 
     @Autowired
-    private RolesService rolesService;
+    private RolesServiceInterface rolesServiceInterface;
 
 
     /**
@@ -161,7 +161,7 @@ public class UserService implements UserServiceInterface {
         Optional.ofNullable(updateUserDto.role)
             .ifPresent(role ->{
                 RolesEntity foundRole 
-                    = rolesService.findByIdOrFail(role);//find role id, and valid if already exist
+                    = rolesServiceInterface.findByIdOrFail(role);//find role id, and valid if already exist
 
                 foundUser.setRole(foundRole);//set value
             });

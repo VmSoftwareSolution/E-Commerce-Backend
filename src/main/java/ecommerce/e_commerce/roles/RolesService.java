@@ -74,16 +74,12 @@ public class RolesService implements RolesServiceInterface {
     * This method find by roles name and return data, but if data is empty
     * @return a NoSuchElementException
     */
-    //FIX: Changed this method, using orElseThrow
     @Override
-    public Optional<RolesEntity> findRolesByNameOrFail(String name){
-        Optional<RolesEntity> foundROles = this.findRolesByName(name);
-
-        if(foundROles.isEmpty()){
-            throw  new NoSuchElementException("Roles with name = " + name + " not found.");
-        }
-
-        return foundROles;
+    public RolesEntity findRolesByNameOrFail(String name){
+        return this.findRolesByName(name)
+            .orElseThrow(()-> 
+                new NoSuchElementException("Roles with name = " + name + " not found.")
+            );
     }
 
     /**

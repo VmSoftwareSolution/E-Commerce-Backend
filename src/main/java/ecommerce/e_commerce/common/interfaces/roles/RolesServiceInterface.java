@@ -11,7 +11,7 @@ public interface RolesServiceInterface {
 
   //Bases methods
   public Optional<RolesEntity> findRolesByName(String name);
-  public Optional<RolesEntity> findRolesByNameOrFail(String name);
+  public RolesEntity findRolesByNameOrFail(String name);
   public Optional<RolesEntity> findById(Long id);
   public RolesEntity findByIdOrFail(Long id);
 } 

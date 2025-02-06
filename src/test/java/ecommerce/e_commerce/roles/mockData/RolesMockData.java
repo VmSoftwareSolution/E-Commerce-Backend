@@ -54,15 +54,13 @@ public class RolesMockData {
      *
      * @return an {@link Optional} containing a pre configured {@link RolesEntity} object
      */
-    public static Optional<RolesEntity> rolesEntityOptionalList(){
+    public static RolesEntity rolesEntityList(){
         RolesEntity rolesEntity = new RolesEntity();
 
         rolesEntity.setName("Guest");
         rolesEntity.setDescription("user someone permission");
 
-        Optional<RolesEntity> optionalEntity = Optional.of(rolesEntity);
-
-        return optionalEntity;
+        return rolesEntity;
     }
 
 }

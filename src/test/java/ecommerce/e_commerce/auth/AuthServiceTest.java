@@ -68,7 +68,7 @@ public class AuthServiceTest {
     
         when(
             rolesServiceInterface.findRolesByNameOrFail("Guest")
-        ).thenReturn(RolesMockData.rolesEntityOptionalList());
+        ).thenReturn(RolesMockData.rolesEntityList());
 
         when(
             encoder.encode(createUserDto.password)
@@ -132,7 +132,7 @@ public class AuthServiceTest {
     
         when(
             rolesServiceInterface.findRolesByNameOrFail("Guest")
-        ).thenReturn(RolesMockData.rolesEntityOptionalList());
+        ).thenReturn(RolesMockData.rolesEntityList());
 
         when(
             encoder.encode(createUserDto.password)
@@ -163,7 +163,7 @@ public class AuthServiceTest {
     
         when(
             rolesServiceInterface.findRolesByNameOrFail("Guest")
-        ).thenReturn(RolesMockData.rolesEntityOptionalList());
+        ).thenReturn(RolesMockData.rolesEntityList());
 
         when(
             encoder.encode(createUserDto.password)
