@@ -6,14 +6,20 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ecommerce.e_commerce.common.interfaces.user.UserServiceInterface;
+import ecommerce.e_commerce.roles.RolesService;
+import ecommerce.e_commerce.roles.entity.RolesEntity;
 import ecommerce.e_commerce.user.dto.PaginationUserDto;
+import ecommerce.e_commerce.user.dto.UpdateUserDto;
 import ecommerce.e_commerce.user.entity.UserEntity;
 import ecommerce.e_commerce.user.repository.UserRepository;
 
@@ -22,6 +28,13 @@ public class UserService implements UserServiceInterface {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder encoder;
+
+    @Autowired
+    private RolesService rolesService;
+
 
     /**
     * This method retrieves a list of users from the database with optional pagination, sorting, and filtering.
@@ -118,6 +131,69 @@ public class UserService implements UserServiceInterface {
         result.add(response);
         
         return result;    
+    }
+
+    /**
+    * Updates a user with the data provided in the UpdateUserDto. If the email, password, or role is provided, 
+    * the respective values will be updated. The method finds the user by ID, applies changes, and then saves the updated user.
+    * 
+    * @param id The ID of the user to be updated.
+    * @param updateUserDto The DTO containing the new values for the user fields (email, password, role).
+    * @return The updated UserEntity after applying the changes.
+    * @throws NoSuchElementException If the user with the specified ID is not found.
+    */
+    @Override
+    public UserEntity updateUser(Long id, UpdateUserDto updateUserDto) {
+
+        //find user by id and if don't exist throw error
+        UserEntity foundUser = this.findByIdOrFail(id);
+        
+        Optional.ofNullable(updateUserDto.email)//valid if email is not null
+            .ifPresent(email ->{//valid if email has value
+                foundUser.setEmail(email);//set value                
+            });
+        
+        Optional.ofNullable(updateUserDto.password)//valid if password is not null
+            .ifPresent(password ->{//valid if password has value
+                foundUser.setPassword(encoder.encode(password));//set value with encoder 
+            });
+
+        Optional.ofNullable(updateUserDto.role)
+            .ifPresent(role ->{
+                RolesEntity foundRole 
+                    = rolesService.findByIdOrFail(role);//find role id, and valid if already exist
+
+                foundUser.setRole(foundRole);//set value
+            });
+        
+        return userRepository.save(foundUser);
+    }
+
+
+    //Bases methods
+
+    /**
+    * Finds a user by its ID. If the user is found, it returns the user as an Optional.
+    * 
+    * @param id The ID of the user to find.
+    * @return An Optional containing the user if found, otherwise an empty Optional.
+    */
+    @Override
+    public Optional<UserEntity> findById(Long id){
+        return userRepository.findById(id);
+    }
+
+    /**
+    * Finds a user by its ID and throws an exception if not found.
+    * 
+    * @param id The ID of the user to find.
+    * @return The found user entity.
+    * @throws NoSuchElementException If no user with the specified ID is found.
+    */
+    @Override
+    public UserEntity findByIdOrFail(Long id){
+        return this.findById(id).orElseThrow(
+            ()-> new NoSuchElementException("User with id "+ id + " not found"));
     }
 
 }
