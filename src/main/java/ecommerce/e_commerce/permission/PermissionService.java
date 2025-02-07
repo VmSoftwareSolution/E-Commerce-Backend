@@ -1,18 +1,28 @@
 package ecommerce.e_commerce.permission;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ecommerce.e_commerce.common.interfaces.permission.PermissionServiceInterface;
 import ecommerce.e_commerce.permission.dto.CreatePermissionDto;
+import ecommerce.e_commerce.permission.dto.PaginationPermissionDto;
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import ecommerce.e_commerce.permission.repository.PermissionRepository;
 
 @Service
 public class PermissionService implements PermissionServiceInterface {
+
     
     @Autowired
     private PermissionRepository permissionRepository;
@@ -39,7 +49,111 @@ public class PermissionService implements PermissionServiceInterface {
 
         return permissionRepository.save(permissionEntity);
     }
+    
+    /**
+    * Retrieves a list of permissions based on the given pagination and filtering criteria.
+    * 
+    * This method fetches all permissions from the database and applies various filters
+    * and sorting based on the provided {@link PaginationPermissionDto}.
+    * 
+    * The method supports:
+    * - Flattening data if `flatten` is set to true (restricting additional filters).
+    * - Limiting and offsetting results for pagination.
+    * - Sorting results in ascending (default) or descending order based on name.
+    * - Filtering by permission name if provided.
+    * 
+    * @param paginationPermissionDto an optional {@link PaginationPermissionDto} object 
+    *                                containing pagination and filtering options.
+    * 
+    * @return a list of maps, each representing a permission entity with id, name, 
+    *         and optionally description, structured according to the request parameters.
+    * 
+    * @throws IllegalArgumentException if `flatten` is true but additional filtering 
+    *                                  parameters are provided.
+    */
+    @Override
+    public List<Map<String, Object>> findPermission(PaginationPermissionDto paginationPermissionDto) {
+        
+        //Find all permission in the database
+        List<PermissionEntity> foundPermission = permissionRepository.findAll();
+        
 
+        //Destructuring PaginationPermissionDto
+        boolean flatten = paginationPermissionDto !=null && paginationPermissionDto.isFlatten();
+        int limit = paginationPermissionDto !=null && paginationPermissionDto.getLimit()!=0
+            ? paginationPermissionDto.getLimit():50;
+        int offset = paginationPermissionDto !=null && paginationPermissionDto.getOffset()!=0
+            ? paginationPermissionDto.getOffset():0;
+        String sortOrder = paginationPermissionDto != null ? paginationPermissionDto.getSortOrder():null;
+        String name = paginationPermissionDto !=null ? paginationPermissionDto.getName():null;
+
+        //Valid if flatten provide
+        if(flatten){
+            if(flatten && (
+                limit!=50 ||
+                offset!= 0 ||
+                sortOrder!=null ||
+                name!=null
+            )){
+                throw new IllegalArgumentException("The paginationPermissionDto object cannot have other fields besides 'flatten'");    
+            }
+
+            Map<String,Object> response = new LinkedHashMap<>();
+
+            response.put("Context", "Permission");
+            response.put("TotalData", foundPermission.size());
+            response.put("Data", foundPermission.stream()
+                .map(permission ->{
+                    Map<String,Object> permissionMap = new LinkedHashMap<>();
+
+                    permissionMap.put("id", permission.getId());
+                    permissionMap.put("name", permission.getName());
+
+                    return permissionMap;
+                })
+                .collect(Collectors.toList()));
+                return Collections.singletonList(response);
+        }
+
+
+        //Logic for sortORder DESC, this is default to ASC
+        Comparator<Map<String,Object>> sort = Comparator.comparing(m->(String) m.get("name"));
+
+        if(sortOrder != null && sortOrder.equalsIgnoreCase("DESC")){
+            sort = sort.reversed();
+        }
+
+        //Filter based on name if provide
+        Predicate<PermissionEntity> nameFilter = permission -> name == null
+            || permission.getName().toLowerCase().contains(name.toLowerCase());
+
+        //Iterate to foundPermission and extract id,name and description
+        Map<String,Object> response = new LinkedHashMap<>();
+        
+        response.put("Context", "Permission");
+        response.put("TotalData", foundPermission.size());
+        response.put("Data", foundPermission.stream()
+            .filter(nameFilter)
+            .map(permission->{
+                Map<String,Object> permissionMap = new LinkedHashMap<>();
+
+                permissionMap.put("id", permission.getId());
+                permissionMap.put("name", permission.getName());
+                permissionMap.put("description", permission.getDescription());
+
+                return permissionMap;
+            })
+            .skip(offset)
+            .limit(limit)
+            .sorted(sort)
+            .collect(Collectors.toList())
+        );
+
+        List<Map<String,Object>> result = new LinkedList<>();
+        result.add(response);
+
+        return result;
+    }
 
     //This method find by id permission, and return data or empty
     @Override
@@ -62,6 +176,8 @@ public class PermissionService implements PermissionServiceInterface {
 
         return foundPermission;
     }
+
+
 
 
 
