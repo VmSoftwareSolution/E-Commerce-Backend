@@ -1,13 +1,16 @@
 package ecommerce.e_commerce.roles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -23,9 +26,11 @@ import ecommerce.e_commerce.common.interfaces.permission.PermissionServiceInterf
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import ecommerce.e_commerce.permission.mockData.PermissionMockData;
 import ecommerce.e_commerce.roles.dto.CreateRolesDto;
+import ecommerce.e_commerce.roles.dto.PaginationRolesDto;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
 import ecommerce.e_commerce.roles.mockData.RolesMockData;
 import ecommerce.e_commerce.roles.repository.RolesRepository;
+import ecommerce.e_commerce.user.mockData.UserMockData;
 
 public class RolesServiceTest {
     
@@ -199,5 +204,141 @@ public class RolesServiceTest {
 
           // Verify repository interaction
         Mockito.verify(rolesRepository).save(any(RolesEntity.class));
+    }
+
+    @Test
+    public void testFindRolesWithoutPagination(){
+        //Configure method when called
+        when(rolesRepository.findAll())
+            .thenReturn(RolesMockData.RolesListRepository());
+
+        //Create object pagination
+        PaginationRolesDto paginationRolesDto = new PaginationRolesDto();
+
+        //Call method findRoles
+        List<Map<String,Object>> result 
+            = rolesService.findRoles(paginationRolesDto);
+
+        //Asserts
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(
+            "Roles", 
+            result.get(0).get("Context")
+        );
+        assertEquals(
+            UserMockData.UserListRepository().size(),
+            result.get(0).get("TotalData")
+        );
+
+        //verify
+        verify(rolesRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void testFIndROlesWhitFlatten(){
+        //Configure method when called
+        when(rolesRepository.findAll())
+            .thenReturn(RolesMockData.RolesListRepository());
+
+        //Create object pagination with flatten true
+        PaginationRolesDto paginationRolesDto = new PaginationRolesDto();
+        paginationRolesDto.setFlatten(true);
+
+        //Call method findRoles
+        List<Map<String,Object>> result 
+            = rolesService.findRoles(paginationRolesDto);
+
+        //Asserts
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(
+            "Roles",
+            result.get(0).get("Context")
+        );
+        assertEquals(
+            RolesMockData.RolesListRepository().size(),
+            result.get(0).get("TotalData")
+        );
+
+        //Verify
+        verify(rolesRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void testFindRolesWithSortingAndPagination(){
+        //Configure method when called
+        when(rolesRepository.findAll())
+            .thenReturn(RolesMockData.RolesListRepository());
+
+        //Create object pagination with sortORder, limit and offset
+        PaginationRolesDto paginationRolesDto = new PaginationRolesDto();
+
+        paginationRolesDto.setLimit(2);
+        paginationRolesDto.setOffset(1);
+        paginationRolesDto.setSortOrder("DESC");
+
+        //Call method findRoles
+        List<Map<String,Object>> result 
+            = rolesService.findRoles(paginationRolesDto);
+
+        //Asserts
+        assertNotNull(result);
+        assertEquals(
+            1, 
+            ((List<?>) result.get(0).get("Data")).size()
+        );
+
+        //Verify
+        verify(rolesRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void testFindRolesWithNameFilter(){
+        //Configure method when called
+        when(rolesRepository.findAll())
+            .thenReturn(RolesMockData.RolesListRepository());
+
+        //Create object pagination with name
+        PaginationRolesDto paginationRolesDto = new PaginationRolesDto();
+        paginationRolesDto.setName("Admin");
+
+        //Call method findRoles
+        List<Map<String,Object>> result 
+            = rolesService.findRoles(paginationRolesDto);
+
+            List<?> data = (List<?>) result.get(0).get("Data");
+
+        //Asserts
+        assertNotNull(result);
+        assertEquals(2, data.size());
+
+        //Verify
+        verify(rolesRepository,times(1)).findAll();
+    }
+
+    @Test
+    public void testFindRoleWithInvalidFlatten(){
+        //Configure methods when called
+        when(rolesRepository.findAll())
+            .thenReturn(RolesMockData.RolesListRepository());
+
+        //Create object pagination with flatten and limit
+        PaginationRolesDto paginationRolesDto = new PaginationRolesDto();
+        paginationRolesDto.setFlatten(true);
+        paginationRolesDto.setLimit(5);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            rolesService.findRoles(paginationRolesDto);
+        });
+        
+        //Asserts
+        assertEquals(
+            "The paginationRolesDto object cannot have other fields besides 'flatten'", 
+            exception.getMessage()
+        );
+        
+        //Verify
+        verify(rolesRepository).findAll();
     }
 }

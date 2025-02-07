@@ -54,4 +54,21 @@ public class RolesControllerTest {
             .status()
             .isCreated()); 
     }
+
+
+
+    @Test
+    public void testFindRoles() throws Exception{
+
+        Mockito.when(rolesServiceInterface.findRoles(any())).thenReturn(RolesMockData.RolesList());
+
+        String token = AuthMockData.generateTokenAdmin();
+        
+        mockMvc.perform(MockMvcRequestBuilders.get(apiPrefix+"/roles")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + token))
+            .andExpect(MockMvcResultMatchers
+            .status()
+            .isOk()); 
+    }
 }
