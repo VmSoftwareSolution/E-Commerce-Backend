@@ -2,6 +2,7 @@ package ecommerce.e_commerce.permission;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import ecommerce.e_commerce.common.interfaces.permission.PermissionControllerInt
 import ecommerce.e_commerce.common.interfaces.permission.PermissionServiceInterface;
 import ecommerce.e_commerce.permission.dto.CreatePermissionDto;
 import ecommerce.e_commerce.permission.dto.PaginationPermissionDto;
+import ecommerce.e_commerce.permission.dto.UpdatePermissionDto;
+import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +28,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -165,6 +169,72 @@ public class PermissionController implements PermissionControllerInterface{
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(foundPermission); 
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+
+
+        /**
+    * Endpoint to update an existing permission.
+    * 
+    * This method allows updating a permission entity based on its ID and the provided 
+    * {@link UpdatePermissionDto}. Only the provided fields will be updated.
+    * 
+    * @param id The ID of the permission to update.
+    * @param updatePermissionDto A DTO containing the updated values for the permission.
+    * 
+    * @return ResponseEntity<?> with status 200 (OK) containing the updated permission.
+    * 
+    * @throws NoSuchElementException if the permission with the given ID is not found.
+    * @throws Exception if an unexpected error occurs during processing.
+    */
+    @Operation(
+        summary = "Update a Permission",
+        description = "Updates an existing permission. Requires 'write.all' authority."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Permission successfully updated",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{"
+                    + "\"id\": 1,"
+                    + "\"name\": \"write.all\","
+                    + "\"description\": \"Updated permission description\""
+                    + "}")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Permission not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Permission with id = 1 not found.\" }")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Unexpected Error\" }")
+            )
+        )
+    })
+    @Override
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('write.all')")
+    public ResponseEntity<?> updatePermission(Long id, @Valid UpdatePermissionDto updatePermissionDto) {
+        try {
+            PermissionEntity result 
+                = permissionServiceInterface.updatePermission(id, updatePermissionDto);
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
         } catch (Exception e) {
             throw e;
         }

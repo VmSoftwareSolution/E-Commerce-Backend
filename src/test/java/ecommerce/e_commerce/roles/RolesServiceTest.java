@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,7 +63,7 @@ public class RolesServiceTest {
         //Valid if permission id exist
         when(permissionServiceInterface
             .findByIdOrFail(createRolesDto.permission.get(0))
-        ).thenReturn(Optional.of(permissionEntity.get(0)));;
+        ).thenReturn(permissionEntity.get(0));;
         
         //Call repository
         when(rolesRepository
@@ -103,7 +102,7 @@ public class RolesServiceTest {
         //Valid if permission id exist
         when(permissionServiceInterface
             .findByIdOrFail(createRolesDto.permission.get(0))
-        ).thenReturn(Optional.of(permissionEntity.get(0)));;
+        ).thenReturn(permissionEntity.get(0));;
       
         //Call repository
         when(rolesRepository
@@ -137,7 +136,7 @@ public class RolesServiceTest {
         //Valid if permission id exist
         when(permissionServiceInterface
          .findByIdOrFail(createRolesDto.permission.get(0))
-        ).thenReturn(Optional.of(permissionEntity.get(0)));;
+        ).thenReturn(permissionEntity.get(0));;
 
         doThrow(
             new DataIntegrityViolationException("Duplicate key value violates unique constraint")
@@ -188,7 +187,7 @@ public class RolesServiceTest {
         //Valid if permission id exist
         when(permissionServiceInterface
          .findByIdOrFail(createRolesDto.permission.get(0))
-        ).thenReturn(Optional.of(permissionEntity.get(0)));;
+        ).thenReturn(permissionEntity.get(0));;
 
         doThrow(
             new RuntimeException("Unexpected error occurred")

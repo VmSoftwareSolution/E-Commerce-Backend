@@ -58,7 +58,7 @@ public class RolesService implements RolesServiceInterface {
         createRolesDto.permission.stream()
             .map(permission -> permissionServiceInterface.findByIdOrFail(permission)) // find permission by id
             .distinct()// ignore item duplicate
-            .forEach(permission -> permission.ifPresent(foundPermission::add));// if exit add to list foundPermission
+            .forEach(foundPermission::add);// if exit add to list foundPermission
 
         rolesEntity.setPermission(foundPermission);
 
