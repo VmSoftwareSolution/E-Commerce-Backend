@@ -55,4 +55,21 @@ public class PermissionControllerTest {
             .isCreated()); 
     }
 
+    @Test
+    public void testFindPermissionSuccessfully() throws Exception{
+        
+        Mockito.when(permissionServiceInterface.findPermission(any()))
+            .thenReturn(PermissionMockData.permissionEntityList());
+        
+        String token = AuthMockData.generateTokenAdmin();
+        
+        mockMvc.perform(MockMvcRequestBuilders.get(apiPrefix+"/permission")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + token))
+            .andExpect(MockMvcResultMatchers
+                .status()
+                .isOk()
+            ); 
+    }
+
 }

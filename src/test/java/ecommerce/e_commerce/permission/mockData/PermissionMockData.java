@@ -1,7 +1,11 @@
 package ecommerce.e_commerce.permission.mockData;
 
+
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import ecommerce.e_commerce.permission.dto.CreatePermissionDto;
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
@@ -70,4 +74,49 @@ public class PermissionMockData {
 
         return permissions; // Return the list of permissions
     }
+
+    /**
+    * Generates a list of permission data in a map format.
+    * This method creates a mock list of permissions where each permission is stored 
+    * as a key-value pair within a map.
+    * 
+    * @return a list of {@link Map} objects, each representing a mock permission.
+    */
+    public static List<Map<String,Object>> permissionEntityList(){
+      
+        //Create array
+        List<Map<String,Object>> permissionResult = new ArrayList<>();
+
+        //Create mock to permission
+        Map<String,Object> permissionMock = new LinkedHashMap<>();
+        permissionMock.put("id", 1L);
+        permissionMock.put("name", "write.all");
+        permissionMock.put("description", "write and update to the all modules");
+
+        permissionResult.add(permissionMock);
+
+        return permissionResult;
+    }
+
+    /**
+    * Generates a list of permission entities with mock data.
+    * This method returns a list of permission entities that simulate data retrieved 
+    * from a repository.
+    * 
+    * @return a list of {@link PermissionEntity} instances with mock permissions.
+    */
+    public static List<PermissionEntity> permissionListRepository(){
+        return PermissionMockData.permissionEntityList()
+            .stream().map(permissionMap ->{
+                PermissionEntity entity =  new PermissionEntity();
+
+                entity.setId(1L);
+                entity.setName("write.all");
+                entity.setDescription("create and update to all modules");
+
+                return entity;
+            }).collect(Collectors.toList());
+    }
+
+
 }
