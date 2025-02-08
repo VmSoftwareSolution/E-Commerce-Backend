@@ -52,6 +52,10 @@ public class PermissionController implements PermissionControllerInterface{
     * @throws Exception if there is an error during the user creation process, 
     *         which will be handled by a global exception handler.  
     */
+    @Operation(
+        summary = "Create a new Permission",
+        description = "Create a new permission. Requires 'write.all' authority."
+    )
     @ApiResponses({
         @ApiResponse(
             responseCode = "201",

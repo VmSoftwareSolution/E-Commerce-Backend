@@ -51,6 +51,10 @@ public class RolesController implements RolesControllerInterface {
     * @throws Exception if there is an error during the user creation process, 
     *         which will be handled by a global exception handler.
     */
+    @Operation(
+        summary = "Create a new role",
+        description = "Create a new role. Requires 'write.all' authority."
+    )
     @ApiResponses({
         @ApiResponse(
             responseCode = "201",
@@ -133,14 +137,6 @@ public class RolesController implements RolesControllerInterface {
                 schema = @Schema(example = 
                     "[{\"Context\":\"Roles\",\"TotalData\":2,\"Data\":[{\"id\":1,\"name\":\"Admin\",\"description\":\"Administrator role\",\"permission\":[{\"id\":1,\"name\":\"create.all\"}]}]}]"
                 )
-            )
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Invalid input data",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(example = "{\"error\": \"Invalid pagination parameters\" }")
             )
         ),
         @ApiResponse(

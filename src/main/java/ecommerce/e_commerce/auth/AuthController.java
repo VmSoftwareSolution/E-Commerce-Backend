@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ecommerce.e_commerce.auth.dto.CreateUserDto;
 import ecommerce.e_commerce.common.interfaces.auth.AuthControllerInterface;
 import ecommerce.e_commerce.common.interfaces.auth.AuthServiceInterface;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,6 +46,10 @@ public class AuthController implements AuthControllerInterface{
     * @throws Exception if there is an error during the user creation process, 
     *         which will be handled by a global exception handler.
     */
+     @Operation(
+        summary = "Create a new user",
+        description = "Create a new user"
+    )
     @ApiResponses({
         @ApiResponse(
             responseCode = "201",
@@ -99,6 +104,10 @@ public class AuthController implements AuthControllerInterface{
     * @throws Exception if there is an error during the login process (e.g., invalid credentials or server error), 
     *         which will be handled by a global exception handler.
     */
+    @Operation(
+        summary = "Login to user",
+        description = "Login to user"
+    )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
