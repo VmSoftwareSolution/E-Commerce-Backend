@@ -261,4 +261,46 @@ public class UserServiceTest {
         verify(encoder).encode(updateUserDto.password);
         verify(rolesServiceInterface).findByIdOrFail(updateUserDto.role);
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testFindUserDetail(){
+        //Initialize variable
+        Long id = 1L;
+
+        //Configure method when called
+        when(userRepository.findById(id))
+            .thenReturn(Optional.of(UserMockData.UserListRepository().get(0)));
+
+        //Call method find user detail
+        List<Map<String,Object>> result 
+            = userService.findUserDetail(id);
+
+        //Asserts
+        assertNotNull(result);
+        assertEquals("user1@example.com", result.get(0).get("name"));
+
+        Map<String, Object> roleData = (Map<String, Object>) result.get(0).get("role");
+        assertEquals(1L, roleData.get("id"));
+        assertEquals("Admin", roleData.get("name"));
+
+        //Verify
+        verify(userRepository).findById(id);
+    }
+
+    @Test
+    public void testFindUserDetailNotFound(){
+        //Initialize variable
+        Long id = 1L;
+
+        //Configure method when called
+        when(userRepository.findById(id))
+            .thenThrow(new NoSuchElementException("User with id " + id + " not found."));
+
+        //Asserts
+        assertThrows(
+            NoSuchElementException.class,
+            ()-> userService.findUserDetail(id)
+        );
+    }
 }

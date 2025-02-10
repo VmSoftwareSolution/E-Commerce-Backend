@@ -70,4 +70,22 @@ public class UserControllerTest {
             .isOk()); 
     }
 
+
+    @Test
+    public void testFindUsersDetail() throws Exception{
+
+        Long id = 1L;
+        Mockito.when(userServiceInterface.findUserDetail(id))
+            .thenReturn(UserMockData.UserListDetail());
+
+        String token = AuthMockData.generateTokenAdmin();
+        
+        mockMvc.perform(MockMvcRequestBuilders.get(apiPrefix+"/users/"+id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + token))
+            .andExpect(MockMvcResultMatchers
+            .status()
+            .isOk()); 
+    }
+
 }
