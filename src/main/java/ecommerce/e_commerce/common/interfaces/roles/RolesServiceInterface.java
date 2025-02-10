@@ -11,7 +11,9 @@ import ecommerce.e_commerce.roles.entity.RolesEntity;
 
 public interface RolesServiceInterface {
 
-  public RolesEntity createRoles(CreateRolesDto createRolesDto);
+  public RolesEntity createRoles(
+    CreateRolesDto createRolesDto
+  );
     
   public List<Map<String,Object>> findRoles(
     PaginationRolesDto paginationRolesDto
@@ -22,6 +24,10 @@ public interface RolesServiceInterface {
     UpdateRolesDto updateRolesDto
   );
 
+  public List<Map<String,Object>> findRolesDetail(
+    Long id
+  );
+  
   //Bases methods
   public Optional<RolesEntity> findRolesByName(String name);
   public RolesEntity findRolesByNameOrFail(String name);

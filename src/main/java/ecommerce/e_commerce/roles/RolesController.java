@@ -262,6 +262,98 @@ public class RolesController implements RolesControllerInterface {
         }
     }
 
+
+    /**
+     * Retrieves detailed information about a specific role by its ID.
+     * <p>
+     * This endpoint fetches a role from the system, including its ID, name, 
+     * description, and associated permissions. Each permission is structured 
+     * as an object containing its ID and name.
+     * </p>
+     *
+     * @param id The ID of the role to retrieve.
+     * @return A {@link ResponseEntity} containing the role details:
+     *         <ul>
+     *             <li><b>id</b> - The ID of the role.</li>
+     *             <li><b>name</b> - The name of the role.</li>
+     *             <li><b>description</b> - A brief description of the role.</li>
+     *             <li><b>permissions</b> - A list of permissions associated with the role, 
+     *                 where each permission contains:
+     *                 <ul>
+     *                     <li><b>id</b> - The ID of the permission.</li>
+     *                     <li><b>name</b> - The name of the permission.</li>
+     *                 </ul>
+     *             </li>
+     *         </ul>
+     *         Returns a singleton list containing the role data.
+     * @throws Exception if the role with the given ID is not found.
+    */
+    @Operation(
+        summary = "Get role details",
+        description = "Retrieves detailed information about a specific role by its ID. Requires 'read.all' authority."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Role details successfully retrieved",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = """
+                    {
+                        "id": 1,
+                        "name": "Admin",
+                        "description": "Administrator role",
+                        "permissions": [
+                            {
+                                "id": 1,
+                                "name": "create.all"
+                            },
+                            {
+                                "id": 2,
+                                "name": "read.all"
+                            }
+                        ]
+                    }
+                    """)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden - insufficient permissions"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Role not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Role with the given ID not found.\"}")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Unexpected Error\"}")
+            )
+        )
+    })
+    @Override
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('read.all')")
+    public ResponseEntity<?> findRolesDetail(@PathVariable Long id) {
+        try {
+            List<Map<String,Object>> result
+                = rolesServiceInterface.findRolesDetail(id);
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
     
     
 }
