@@ -188,7 +188,38 @@ public class PermissionService implements PermissionServiceInterface {
         return permissionRepository.save(foundPermission);
     }
 
-    
+    /**
+     * Retrieves detailed information about a specific permission.
+     * <p>
+     * This method finds a permission by its ID and returns its details, including
+     * its ID, name, and description.
+     * </p>
+     *
+     * @param id The ID of the permission to retrieve.
+     * @return A list containing a single map with the permission details:
+     *         <ul>
+     *             <li><b>id</b>: The unique identifier of the permission.</li>
+     *             <li><b>name</b>: The name of the permission.</li>
+     *             <li><b>description</b>: A brief description of the permission.</li>
+     *         </ul>
+     * @throws RuntimeException if the permission with the given ID is not found.
+    */
+    @Override
+    public List<Map<String, Object>> findPermissionDetail(Long id) {
+        
+        //Find permission by id
+        PermissionEntity foundPermission = this.findByIdOrFail(id);
+
+        //Mapping permission data
+        Map<String,Object> response = new LinkedHashMap<>();
+
+        response.put("id",foundPermission.getId());
+        response.put("name",foundPermission.getName());
+        response.put("description",foundPermission.getDescription());
+
+        return Collections.singletonList(response);
+    }
+
     /**
     * Finds a permission by its ID.
     * 
@@ -214,6 +245,7 @@ public class PermissionService implements PermissionServiceInterface {
             ()-> new NoSuchElementException("Permission with id = " + id + " not found.")
         );
     }
+
 
 
 
