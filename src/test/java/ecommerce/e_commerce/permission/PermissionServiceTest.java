@@ -214,7 +214,7 @@ public class PermissionServiceTest {
         //Asserts
         assertNotNull(result);
         assertEquals(
-            1,
+            2,
             ((List<?>)  result.get(0).get("Data")).size()
         );
 
@@ -240,7 +240,7 @@ public class PermissionServiceTest {
 
         //Asserts
         assertNotNull(result);
-        assertEquals(1, data.size());
+        assertEquals(2, data.size());
 
         //Verify
         verify(permissionRepository,times(1)).findAll();
@@ -320,5 +320,47 @@ public class PermissionServiceTest {
         verify(permissionRepository).findById(id);
     }
 
+    @Test
+    public void testFindPermissionDetail(){
+        //Initialize variable
+        Long id = 1L;
+
+        //Configure method when called
+        when(permissionRepository.findById(id))
+            .thenReturn(Optional.of(PermissionMockData.permissionListRepository().get(0)));
+
+        //Call method findPermissionDetail
+        List<Map<String,Object>> result 
+            = permissionService.findPermissionDetail(id);
+
+        //Asserts
+        assertEquals(1L, result.get(0).get("id"));
+        assertEquals("write.all", result.get(0).get("name"));
+        assertEquals("create and update to all modules", result.get(0).get("description"));
+
+        //Verify
+        verify(permissionRepository).findById(id);
+    }
+
+    @Test
+    public void testFindPermissionDetailNotFound(){
+        //Initialize variable
+        Long id = 1L;
+
+        //Configure method when called
+        when(permissionRepository.findById(id))
+            .thenThrow(new NoSuchElementException(
+                "Permission with id "+ id + " not found.")
+            );
+
+        //Asserts
+        assertThrows(
+            NoSuchElementException.class,
+            ()-> permissionService.findPermissionDetail(id)
+        );
+
+        //Verify
+        verify(permissionRepository).findById(id);
+    }
     
 }

@@ -111,12 +111,43 @@ public class PermissionMockData {
         List<Map<String,Object>> permissionResult = new ArrayList<>();
 
         //Create mock to permission
-        Map<String,Object> permissionMock = new LinkedHashMap<>();
-        permissionMock.put("id", 1L);
-        permissionMock.put("name", "write.all");
-        permissionMock.put("description", "write and update to the all modules");
+        Map<String,Object> permissionMock1 = new LinkedHashMap<>();
+        permissionMock1.put("id", 1L);
+        permissionMock1.put("name", "write.all");
+        permissionMock1.put("description", "write and update to the all modules");
 
-        permissionResult.add(permissionMock);
+
+        Map<String,Object> permissionMock2 = new LinkedHashMap<>();
+        permissionMock2.put("id", 2L);
+        permissionMock2.put("name", "write");
+        permissionMock2.put("description", "write to the all modules");
+
+        permissionResult.add(permissionMock1);
+        permissionResult.add(permissionMock2);
+
+        return permissionResult;
+    }
+
+
+    /**
+     * Generates a list of permission data in a map format.
+     * This method creates a mock list of permissions where each permission is stored 
+     * as a key-value pair within a map.
+     * 
+     * @return a list of {@link Map} objects, each representing a mock permission.
+    */
+    public static List<Map<String,Object>> permissionEntityListDetail(){
+      
+        //Create array
+        List<Map<String,Object>> permissionResult = new ArrayList<>();
+
+        //Create mock to permission
+        Map<String,Object> permissionMock1 = new LinkedHashMap<>();
+        permissionMock1.put("id", 1L);
+        permissionMock1.put("name", "write.all");
+        permissionMock1.put("description", "write and update to the all modules");
+
+        permissionResult.add(permissionMock1);
 
         return permissionResult;
     }
