@@ -72,4 +72,23 @@ public class PermissionControllerTest {
             ); 
     }
 
+    @Test
+    public void testUpdatePermissionSuccessfully() throws Exception{
+        Long id = 1L;
+        String json = objectMapper.writeValueAsString(PermissionMockData.updatePermissionDto());
+
+        Mockito.when(permissionServiceInterface.updatePermission(
+            id, PermissionMockData.updatePermissionDto())
+        ).thenReturn(PermissionMockData.updatePermissionEntity());
+
+        String token = AuthMockData.generateTokenAdmin(); 
+
+        mockMvc.perform(MockMvcRequestBuilders.put(apiPrefix+"/permission/"+id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json).header("Authorization", "Bearer " + token))
+            .andExpect(MockMvcResultMatchers
+            .status()
+            .isOk()); 
+    }
+
 }
