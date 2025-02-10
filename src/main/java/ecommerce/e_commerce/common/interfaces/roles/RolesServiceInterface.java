@@ -6,14 +6,21 @@ import java.util.Optional;
 
 import ecommerce.e_commerce.roles.dto.CreateRolesDto;
 import ecommerce.e_commerce.roles.dto.PaginationRolesDto;
+import ecommerce.e_commerce.roles.dto.UpdateRolesDto;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
 
 public interface RolesServiceInterface {
 
-  public RolesEntity createRoles(CreateRolesDto createRolesDto);  
+  public RolesEntity createRoles(CreateRolesDto createRolesDto);
+    
   public List<Map<String,Object>> findRoles(
     PaginationRolesDto paginationRolesDto
-  ); 
+  );
+
+  public RolesEntity updateRoles(
+    Long id, 
+    UpdateRolesDto updateRolesDto
+  );
 
   //Bases methods
   public Optional<RolesEntity> findRolesByName(String name);

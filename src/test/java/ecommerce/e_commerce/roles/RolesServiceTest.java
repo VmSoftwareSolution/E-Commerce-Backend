@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import ecommerce.e_commerce.permission.mockData.PermissionMockData;
 import ecommerce.e_commerce.roles.dto.CreateRolesDto;
 import ecommerce.e_commerce.roles.dto.PaginationRolesDto;
+import ecommerce.e_commerce.roles.dto.UpdateRolesDto;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
 import ecommerce.e_commerce.roles.mockData.RolesMockData;
 import ecommerce.e_commerce.roles.repository.RolesRepository;
@@ -339,5 +341,81 @@ public class RolesServiceTest {
         
         //Verify
         verify(rolesRepository).findAll();
+    }
+
+    @Test
+    public void testUpdateRolesSuccessfully(){
+        //Initialize variable
+        Long id = 1L;
+        UpdateRolesDto dto = RolesMockData.updateRolesDto();
+
+        //Configure method when called
+        when(rolesRepository.findById(id))
+            .thenReturn(Optional.of(RolesMockData.updateRolesEntity()));
+
+        when(permissionServiceInterface.findByIdOrFail(dto.permission.get(0)))
+            .thenReturn(PermissionMockData.permissionEntity());
+
+        when(rolesRepository.save(any(RolesEntity.class)))
+            .thenReturn(RolesMockData.updateRolesEntity());
+
+        //Call method updateRoles
+        RolesEntity result 
+            = rolesService.updateRoles(id, dto);
+
+        //Asserts
+        assertEquals(dto.name, result.getName());
+        assertEquals(dto.description, result.getDescription());
+        assertEquals(dto.permission.get(0), result.getPermission().get(0).getId());
+        
+        //Verify
+        verify(rolesRepository).findById(id);
+        verify(permissionServiceInterface).findByIdOrFail(dto.permission.get(0));
+        verify(rolesRepository).save(any(RolesEntity.class));
+    }
+
+    @Test
+    public void testUpdateRolesNotFound(){
+        //Initialize variable
+        Long id = 1L;
+        UpdateRolesDto dto = RolesMockData.updateRolesDto();
+ 
+        //Configure method when called
+        when(rolesRepository.findById(id))
+             .thenThrow(new NoSuchElementException("Roles with id " + id + " not found.")
+            );
+
+        //Asserts
+        assertThrows(
+            NoSuchElementException.class, 
+            ()-> rolesService.updateRoles(id, dto)
+        );
+
+        //Verify
+        verify(rolesRepository).findById(id);
+    }
+
+    @Test
+    public void testUpdateRolesPermissionNotFound(){
+        //Initialize variable
+        Long id = 1L;
+        UpdateRolesDto dto = RolesMockData.updateRolesDto();
+
+        //Configure method when called
+        when(rolesRepository.findById(id))
+            .thenReturn(Optional.of(RolesMockData.updateRolesEntity()));
+
+        when(permissionServiceInterface.findByIdOrFail(dto.permission.get(0)))
+            .thenThrow(new NoSuchElementException("Permission not found"));
+
+        //Asserts
+        assertThrows(
+            NoSuchElementException.class,
+            ()-> rolesService.updateRoles(id, dto)
+        );
+
+        //Verify
+        verify(rolesRepository).findById(id);
+        verify(permissionServiceInterface).findByIdOrFail(dto.permission.get(0));
     }
 }

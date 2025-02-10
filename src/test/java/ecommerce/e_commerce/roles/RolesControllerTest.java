@@ -71,4 +71,24 @@ public class RolesControllerTest {
             .status()
             .isOk()); 
     }
+
+
+    @Test
+    public void testUpdateRolesSuccessfully()throws Exception{
+        Long id = 1L;
+        String json = objectMapper.writeValueAsString(RolesMockData.updateRolesDto());
+    
+        Mockito.when(rolesServiceInterface.updateRoles(id, RolesMockData.updateRolesDto()))
+            .thenReturn(RolesMockData.updateRolesEntity());
+     
+        String token = AuthMockData.generateTokenAdmin();
+
+        mockMvc.perform(MockMvcRequestBuilders.put(apiPrefix+"/roles/"+id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json)
+            .header("Authorization", "Bearer " + token))
+            .andExpect(MockMvcResultMatchers
+            .status()
+            .isOk()); 
+    }
 }

@@ -9,7 +9,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
+import ecommerce.e_commerce.permission.mockData.PermissionMockData;
 import ecommerce.e_commerce.roles.dto.CreateRolesDto;
+import ecommerce.e_commerce.roles.dto.UpdateRolesDto;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
 
 public class RolesMockData {
@@ -126,4 +128,48 @@ public class RolesMockData {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Creates a mock {@link UpdateRolesDto} object with predefined values.
+     * <p>
+     * This DTO represents updated role data, including a new name, description, 
+     * and a list of associated permission IDs.
+     * </p>
+     *
+     * @return an {@link UpdateRolesDto} instance with the following default values:
+     *         - name: "Guest"
+     *         - description: "User with permission"
+     *         - permission: [1L, 2L] (List of permission IDs)
+    */
+    public static UpdateRolesDto updateRolesDto(){
+        UpdateRolesDto dto = new UpdateRolesDto();
+
+        dto.name="Guest";
+        dto.description="User with permission";
+        dto.permission = Arrays.asList(1L,2L);
+
+        return dto;
+    }
+
+    /**
+     * Creates a mock {@link RolesEntity} representing an updated role.
+     * <p>
+     * This entity contains an ID, updated name, description, and associated permissions.
+     * </p>
+     *
+     * @return a {@link RolesEntity} instance with the following default values:
+     *         - id: 1L
+     *         - name: "Guest"
+     *         - description: "User with permission"
+     *         - permission: List of associated {@link PermissionEntity} instances
+    */
+    public static RolesEntity updateRolesEntity(){
+        RolesEntity entity = new RolesEntity();
+
+        entity.setId(1L);
+        entity.setName("Guest");
+        entity.setDescription("User with permission");
+        entity.setPermission(Arrays.asList(PermissionMockData.permissionEntity()));
+
+        return entity;
+    }
 }

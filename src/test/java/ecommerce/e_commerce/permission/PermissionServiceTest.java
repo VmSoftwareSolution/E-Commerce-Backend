@@ -49,7 +49,7 @@ public class PermissionServiceTest {
             = PermissionMockData.createPermissionDto();
 
         PermissionEntity permissionEntity
-            = PermissionMockData.permissionEntity(createPermissionDto);
+            = PermissionMockData.createPermissionEntity(createPermissionDto);
 
         when(permissionRepository.save(
             any(PermissionEntity.class))
@@ -76,7 +76,7 @@ public class PermissionServiceTest {
             createPermissionDto.description=null;//Delete description
 
         PermissionEntity permissionEntity
-            = PermissionMockData.permissionEntity(createPermissionDto);
+            = PermissionMockData.createPermissionEntity(createPermissionDto);
 
         when(permissionRepository.save(
             any(PermissionEntity.class))

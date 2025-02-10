@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,8 @@ import ecommerce.e_commerce.common.interfaces.roles.RolesControllerInterface;
 import ecommerce.e_commerce.common.interfaces.roles.RolesServiceInterface;
 import ecommerce.e_commerce.roles.dto.CreateRolesDto;
 import ecommerce.e_commerce.roles.dto.PaginationRolesDto;
+import ecommerce.e_commerce.roles.dto.UpdateRolesDto;
+import ecommerce.e_commerce.roles.entity.RolesEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +28,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("roles")
@@ -167,5 +172,96 @@ public class RolesController implements RolesControllerInterface {
             throw e;
         }
     }
+
+
+    /**
+     * Updates an existing role with the provided data.
+     * <p>
+     * This endpoint requires the authority {@code 'write.all'} to access. 
+     * The method will update a role based on the provided role ID and 
+     * the new values for name, description, and permissions. 
+     * If the role is not found, an error will be thrown.
+     * </p>
+     *
+     * @param id The ID of the role to update.
+     * @param updateRolesDto The DTO containing the new values for the role fields (name, description, permissions).
+     * @return A {@link ResponseEntity} containing the updated role entity with HTTP status 200 (OK).
+     * @throws Exception if an unexpected error occurs during processing.
+    */
+    @Operation(
+        summary = "Update a role",
+        description = "Updates an existing role with the provided data. Requires 'write.all' authority."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Role successfully updated",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = """
+                    {
+                    "id": 1,
+                    "name": "Updated Role",
+                    "description": "Updated role description",
+                    "permissions": [
+                        {
+                        "id": 1,
+                        "name": "create.all"
+                        }
+                    ]
+                    }
+                    """)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid input data",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Invalid role name format.\"}")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden - insufficient permissions"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Role not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Role with the given ID not found.\"}")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Unexpected Error\"}")
+            )
+        )
+    })
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('write.all')")
+    @Override
+    public ResponseEntity<?> updateRoles(
+        @PathVariable Long id,
+        @Valid 
+        @RequestBody
+        UpdateRolesDto updateRolesDto) {
+        try {
+            RolesEntity result 
+                = rolesServiceInterface.updateRoles(id, updateRolesDto);
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    
     
 }

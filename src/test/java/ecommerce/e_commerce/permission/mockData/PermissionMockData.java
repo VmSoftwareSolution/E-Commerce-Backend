@@ -43,13 +43,35 @@ public class PermissionMockData {
      *         - name: the name from the DTO.
      *         - description: the description from the DTO.
      */
-    public static PermissionEntity permissionEntity(
+    public static PermissionEntity createPermissionEntity(
         CreatePermissionDto createPermissionDto
     ){
         PermissionEntity entity = new PermissionEntity();
         entity.setId(1L);
         entity.setName(createPermissionDto.name);
         entity.setDescription(createPermissionDto.description);
+
+        return entity;
+    }
+
+    /**
+     * Creates a mock {@link PermissionEntity} with predefined values.
+     * <p>
+     * This method returns a permission entity with a fixed ID, name, and description,
+     * useful for testing purposes.
+     * </p>
+     *
+     * @return a {@link PermissionEntity} instance with the following default values:
+     *         - id: 1L
+     *         - name: "write.all"
+     *         - description: "create and update in the module project"
+    */
+    public static PermissionEntity permissionEntity(
+    ){
+        PermissionEntity entity = new PermissionEntity();
+        entity.setId(1L);
+        entity.setName("write.all");
+        entity.setDescription("create and update in the module project");
 
         return entity;
     }
@@ -148,4 +170,6 @@ public class PermissionMockData {
 
         return entity;
     }
+
+
 }
