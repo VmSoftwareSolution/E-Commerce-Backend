@@ -33,4 +33,9 @@ public interface RolesControllerInterface {
         @RequestBody
         UpdateRolesDto updateRolesDto
     );
+
+    public ResponseEntity<?> findRolesDetail(
+        @PathVariable Long id
+    );
+
 }

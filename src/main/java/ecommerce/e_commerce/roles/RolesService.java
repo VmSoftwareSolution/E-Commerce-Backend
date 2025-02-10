@@ -23,6 +23,7 @@ import ecommerce.e_commerce.roles.dto.PaginationRolesDto;
 import ecommerce.e_commerce.roles.dto.UpdateRolesDto;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
 import ecommerce.e_commerce.roles.repository.RolesRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class RolesService implements RolesServiceInterface {
@@ -209,6 +210,61 @@ public class RolesService implements RolesServiceInterface {
         return rolesRepository.save(foundRoles);
     }
 
+    /**
+     * Retrieves detailed information about a role by its ID.
+     * <p>
+     * This method fetches a role from the database and maps its data, 
+     * including its ID, name, description, and associated permissions.
+     * Each permission is structured as a list of objects containing 
+     * its ID and name.
+     * </p>
+     *
+     * @param id The ID of the role to retrieve.
+     * @return A list containing a single map with role details, including:
+     *         <ul>
+     *             <li><b>id</b> - The ID of the role.</li>
+     *             <li><b>name</b> - The name of the role.</li>
+     *             <li><b>description</b> - A brief description of the role.</li>
+     *             <li><b>permissions</b> - A list of permissions associated with the role, 
+     *                 where each permission contains:
+     *                 <ul>
+     *                     <li><b>id</b> - The ID of the permission.</li>
+     *                     <li><b>name</b> - The name of the permission.</li>
+     *                 </ul>
+     *             </li>
+     *         </ul>
+     *         Returns a singleton list containing the role data.
+     * @throws EntityNotFoundException if the role with the given ID is not found.
+    */
+    @Override
+    public List<Map<String, Object>> findRolesDetail(Long id) {
+
+        //Find the roles by id
+        RolesEntity foundRoles = this.findByIdOrFail(id);
+
+        //Mapping roles data
+        Map<String,Object> response = new LinkedHashMap<>();
+        response.put("id", foundRoles.getId());
+        response.put("name", foundRoles.getName());
+        response.put("description", foundRoles.getDescription());
+
+        
+        //Mapping permission data
+        List<Map<String, Object>> permissions = foundRoles.getPermission().stream()
+            .map(permission -> {
+                Map<String, Object> permissionMap = new LinkedHashMap<>();
+                permissionMap.put("id", permission.getId());
+                permissionMap.put("name", permission.getName());
+                return permissionMap;
+            })
+        .collect(Collectors.toList());
+
+        //put permissionMap to response
+        response.put("permission", permissions);
+
+        return Collections.singletonList(response);
+    }
+
     //Bases methods
     
     /**
@@ -257,6 +313,7 @@ public class RolesService implements RolesServiceInterface {
         return this.findById(id)
             .orElseThrow(()-> new NoSuchElementException("Role with id "+ id + " not found"));
     }
+
 
 
     
