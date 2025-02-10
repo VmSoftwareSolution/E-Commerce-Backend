@@ -282,14 +282,6 @@ public class PermissionController implements PermissionControllerInterface{
             )
         ),
         @ApiResponse(
-            responseCode = "400",
-            description = "Invalid request parameters",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(example = "{\"error\": \"Invalid permission ID format.\"}")
-            )
-        ),
-        @ApiResponse(
             responseCode = "403",
             description = "Forbidden - insufficient permissions"
         ),
