@@ -239,6 +239,84 @@ public class PermissionController implements PermissionControllerInterface{
             throw e;
         }
     }
+
+
+
+    /**
+     * Retrieves detailed information about a specific permission.
+     * <p>
+     * This endpoint requires the authority {@code 'read.all'} to access.
+     * It returns details of a permission, including its ID, name, and associated roles.
+     * </p>
+     *
+     * @param id The ID of the permission to retrieve.
+     * @return A {@link ResponseEntity} containing:
+     *         <ul>
+     *             <li>Permission details, including ID, name, and roles.</li>
+     *             <li>Returns HTTP status 200 (OK) on success.</li>
+     *         </ul>
+     * @throws Exception if an unexpected error occurs during processing.
+    */
+    @Operation(
+        summary = "Get permission details",
+        description = "Retrieves detailed information about a specific permission. Requires 'read.all' authority."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Permission details successfully retrieved",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = """
+                    {
+                      "id": 1,
+                      "name": "Manage Users",
+                      "roles": [
+                        {
+                          "id": 2,
+                          "name": "Admin"
+                        }
+                      ]
+                    }
+                    """)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden - insufficient permissions"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Permission not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Permission with the given ID not found.\"}")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Unexpected Error\"}")
+            )
+        )
+    })
+    @Override
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('read.all')")
+    public ResponseEntity<?> findPermissionDetail(Long id) {
+        try {
+            List<Map<String,Object>> result 
+                = permissionServiceInterface.findPermissionDetail(id);
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
     
 
 }

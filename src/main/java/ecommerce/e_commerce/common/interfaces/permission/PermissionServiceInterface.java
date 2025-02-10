@@ -24,6 +24,10 @@ public interface PermissionServiceInterface {
         UpdatePermissionDto updatePermissionDto
     );
 
+    public List<Map<String,Object>> findPermissionDetail(
+        Long id
+    );
+
     //Base methods
     public Optional<PermissionEntity> findById(Long id);
     public PermissionEntity findByIdOrFail(Long id);

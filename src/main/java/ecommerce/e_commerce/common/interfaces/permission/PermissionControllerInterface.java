@@ -32,4 +32,8 @@ public interface PermissionControllerInterface {
           @Valid
           @RequestBody UpdatePermissionDto updatePermissionDto
      );
+
+     public ResponseEntity<?> findPermissionDetail(
+          @PathVariable Long id
+     );
 }
