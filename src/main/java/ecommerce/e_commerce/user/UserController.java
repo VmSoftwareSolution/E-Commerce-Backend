@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -223,6 +224,85 @@ public class UserController implements UserControllerInterface {
             return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(updateUser);   
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+
+
+    /**
+     * Retrieves detailed information about a specific user by their ID.
+     * <p>
+     * This endpoint requires the authority {@code 'read.all'} to access.
+     * It returns the user's basic details along with their associated role.
+     * If the user is not found, an error will be thrown.
+     * </p>
+     *
+     * @param id The unique identifier of the user to retrieve.
+     * @return A {@link ResponseEntity} containing a list with a single map of user details:
+     *         - {@code id} (Long): The user's ID.
+     *         - {@code name} (String): The user's email.
+     *         - {@code role} (Map<String, Object>): A nested map containing:
+     *             - {@code id} (Long): The role ID.
+     *             - {@code name} (String): The role name.
+     * 
+     * @throws EntityNotFoundException if the user with the given ID is not found.
+    */
+    @Operation(
+        summary = "Get user details",
+        description = "Retrieves detailed information about a user by ID, including their role. Requires 'read.all' authority."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "User details successfully retrieved",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = """
+                    {
+                      "id": 1,
+                      "name": "john.doe@example.com",
+                      "role": {
+                        "id": 2,
+                        "name": "Admin"
+                      }
+                    }
+                    """)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden - insufficient permissions"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"User with the given ID not found.\"}")
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(example = "{\"error\": \"Unexpected Error\"}")
+            )
+        )
+    })
+    @Override
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('read.all')")
+    public ResponseEntity<?> findUserDetail(@PathVariable Long id) {
+        try {
+            List<Map<String,Object>> result 
+                = userServiceInterface.findUserDetail(id);
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
         } catch (Exception e) {
             throw e;
         }

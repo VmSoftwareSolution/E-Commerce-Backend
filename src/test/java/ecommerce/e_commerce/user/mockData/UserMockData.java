@@ -58,6 +58,45 @@ public class UserMockData {
     }
 
     /**
+     * Creates a list of mock data for users as Map<String, Object>.
+     *
+     * @return a List of Map<String, Object> containing mock user data
+    */
+    public static List<Map<String, Object>> UserListDetail() {
+        // Create mock roles
+        RolesEntity role = new RolesEntity();
+        role.setId(1L);
+        role.setName("Admin");
+        role.setDescription("Administrator role with full permissions");
+
+        // Create some mock permissions for the role
+        PermissionEntity permission1 = new PermissionEntity();
+        permission1.setId(1L);
+        permission1.setName("read.all");
+
+        PermissionEntity permission2 = new PermissionEntity();
+        permission2.setId(2L);
+        permission2.setName("write.all");
+
+        role.setPermission(Arrays.asList(permission1, permission2));
+
+        // Creating a list of user data as Map<String, Object>
+        List<Map<String, Object>> users = new ArrayList<>();
+
+        // Create User 
+        Map<String, Object> user1 = new HashMap<>();
+        user1.put("id", 1L);
+        user1.put("email", "user1@example.com");
+        user1.put("role", role);
+        
+        // Add users to the list
+        users.add(user1);
+
+        return users;
+    }
+
+
+    /**
     * Creates a list of mock UserEntity objects.
     *
     * @return a List of UserEntity containing mock user data
