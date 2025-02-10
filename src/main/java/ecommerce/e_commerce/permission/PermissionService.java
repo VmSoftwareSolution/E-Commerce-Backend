@@ -26,12 +26,7 @@ public class PermissionService implements PermissionServiceInterface {
 
     
     @Autowired
-    private final PermissionRepository permissionRepository;
-
-
-    PermissionService(PermissionRepository permissionRepository) {
-        this.permissionRepository = permissionRepository;
-    }
+    private  PermissionRepository permissionRepository;
 
 
     /**
