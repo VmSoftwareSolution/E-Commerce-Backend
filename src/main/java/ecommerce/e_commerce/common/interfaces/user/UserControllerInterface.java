@@ -25,4 +25,8 @@ public interface UserControllerInterface {
         @Valid
         @RequestBody UpdateUserDto updateUserDto
     );
+
+    ResponseEntity<?> findUserDetail(
+        @PathVariable Long id
+    );
 }

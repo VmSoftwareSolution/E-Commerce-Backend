@@ -1,6 +1,5 @@
 package ecommerce.e_commerce.user;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -22,6 +21,7 @@ import ecommerce.e_commerce.user.dto.PaginationUserDto;
 import ecommerce.e_commerce.user.dto.UpdateUserDto;
 import ecommerce.e_commerce.user.entity.UserEntity;
 import ecommerce.e_commerce.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UserService implements UserServiceInterface {
@@ -126,11 +126,8 @@ public class UserService implements UserServiceInterface {
             .limit(limit)
             .collect(Collectors.toList())
         );
-
-        List<Map<String,Object>> result = new ArrayList<>();
-        result.add(response);
         
-        return result;    
+        return Collections.singletonList(response);    
     }
 
     /**
@@ -165,10 +162,51 @@ public class UserService implements UserServiceInterface {
 
                 foundUser.setRole(foundRole);//set value
             });
+            
+            return userRepository.save(foundUser);
+        }
         
-        return userRepository.save(foundUser);
-    }
+    
+    /**
+     * Retrieves user details by user ID and maps the relevant information.
+     * <p>
+     * This method finds a user by the provided ID and constructs a structured response
+     * containing user details and their associated role information.
+     * </p>
+     *
+     * @param id the unique identifier of the user to retrieve.
+     * @return a {@link List} containing a single {@link Map} with the following details:
+     *         - {@code id} (Long): The user's ID.
+     *         - {@code name} (String): The user's email.
+     *         - {@code role} (Map<String, Object>): A nested map containing:
+     *             - {@code id} (Long): The role ID.
+     *             - {@code name} (String): The role name.
+     * 
+     * @throws EntityNotFoundException if the user with the given ID is not found.
+    */
+    @Override
+    public List<Map<String, Object>> findUserDetail(Long id) {
+        //Find user by id
+        UserEntity foundUser = this.findByIdOrFail(id);
 
+        //Mapping user data
+        Map<String,Object> response = new LinkedHashMap<>();
+
+        response.put("id", foundUser.getId());
+        response.put("name", foundUser.getEmail());
+        
+        //Mapping role data
+        Map<String,Object> roleMap = new LinkedHashMap<>();
+
+        roleMap.put("id",foundUser.getRole().getId());
+        roleMap.put("name",foundUser.getRole().getName());
+        
+        //put roleMap to response
+        response.put("role", roleMap);
+
+        //Return response as list
+        return Collections.singletonList(response);
+    }
 
     //Bases methods
 
@@ -195,5 +233,6 @@ public class UserService implements UserServiceInterface {
         return this.findById(id).orElseThrow(
             ()-> new NoSuchElementException("User with id "+ id + " not found"));
     }
+
 
 }

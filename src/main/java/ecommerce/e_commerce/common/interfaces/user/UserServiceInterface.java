@@ -19,6 +19,10 @@ public interface UserServiceInterface {
         UpdateUserDto updateUserDto
     );
 
+    public List<Map<String,Object>> findUserDetail(
+        Long id
+    );
+
     //Base methods
     public Optional<UserEntity> findById(Long id);
     public UserEntity findByIdOrFail(Long id);
