@@ -20,6 +20,7 @@ import ecommerce.e_commerce.common.interfaces.roles.RolesServiceInterface;
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import ecommerce.e_commerce.roles.dto.CreateRolesDto;
 import ecommerce.e_commerce.roles.dto.PaginationRolesDto;
+import ecommerce.e_commerce.roles.dto.UpdateRolesDto;
 import ecommerce.e_commerce.roles.entity.RolesEntity;
 import ecommerce.e_commerce.roles.repository.RolesRepository;
 
@@ -162,6 +163,50 @@ public class RolesService implements RolesServiceInterface {
         result.add(response);
 
         return result;
+    }
+
+    /**
+     * Updates a role entity with the provided data.
+     * 
+     * This method retrieves a role by its ID and updates its fields if the corresponding 
+     * values are provided in the UpdateRolesDto. The update is only performed for non-null fields.
+     * 
+     * - If the name is provided, it updates the role's name.
+     * - If the description is provided, it updates the role's description.
+     * - If the permission list is provided, it retrieves and sets the corresponding permissions.
+     * 
+     * @param id The ID of the role to be updated.
+     * @param updateRolesDto The data transfer object containing the new values for the role.
+     * @return The updated RolesEntity saved in the database.
+    */
+    @Override
+    public RolesEntity updateRoles(Long id, UpdateRolesDto updateRolesDto){
+        //Find the roles by id
+        RolesEntity foundRoles = this.findByIdOrFail(id);
+
+        Optional.ofNullable(updateRolesDto.name)//Valid if name is not null
+            .ifPresent(name ->{//valid if name has value
+                foundRoles.setName(name);
+            });
+
+        Optional.ofNullable(updateRolesDto.description)//Valid if description is not null
+            .ifPresent(description ->{//Valid if description has value
+                foundRoles.setDescription(description);
+            });
+
+        Optional.ofNullable(updateRolesDto.permission)//Valid if permission is not null
+            .ifPresent(permission ->{//Valid if permission has value
+                List<PermissionEntity> foundPermission = new ArrayList<>();
+
+                permission.stream()
+                    .map(permissionId -> permissionServiceInterface.findByIdOrFail(permissionId))
+                    .distinct()
+                    .forEach(foundPermission::add);
+
+                foundRoles.setPermission(foundPermission);
+            });
+
+        return rolesRepository.save(foundRoles);
     }
 
     //Bases methods
