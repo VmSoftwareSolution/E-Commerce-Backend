@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import ecommerce.e_commerce.permission.dto.CreatePermissionDto;
+import ecommerce.e_commerce.permission.dto.UpdatePermissionDto;
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 
 public class PermissionMockData {
@@ -119,4 +120,32 @@ public class PermissionMockData {
     }
 
 
+    /**
+     * Create a UpdatePermissionDto object with mock data.
+     * 
+     * @Return a UpdatePermissionDto instance containing mock permission update data
+    */
+    public static UpdatePermissionDto updatePermissionDto(){
+        UpdatePermissionDto dto = new UpdatePermissionDto();
+
+        dto.name = "write.all";
+        dto.description = "create and update to all modules";
+
+        return dto;
+    }
+
+    /**
+     * Create a PermissionEntity object with mock data.
+     * 
+     * @return a PermissionENtity instance containing mock user entity data already update
+    */
+    public static PermissionEntity updatePermissionEntity(){
+        PermissionEntity entity = new PermissionEntity();
+        
+        entity.setId(1L);
+        entity.setName("write.all");
+        entity.setDescription("create and update to all modules");
+
+        return entity;
+    }
 }

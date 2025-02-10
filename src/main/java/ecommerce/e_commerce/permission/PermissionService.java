@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import ecommerce.e_commerce.common.interfaces.permission.PermissionServiceInterface;
 import ecommerce.e_commerce.permission.dto.CreatePermissionDto;
 import ecommerce.e_commerce.permission.dto.PaginationPermissionDto;
+import ecommerce.e_commerce.permission.dto.UpdatePermissionDto;
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import ecommerce.e_commerce.permission.repository.PermissionRepository;
 
@@ -25,7 +26,7 @@ public class PermissionService implements PermissionServiceInterface {
 
     
     @Autowired
-    private PermissionRepository permissionRepository;
+    private  PermissionRepository permissionRepository;
 
 
     /**
@@ -154,8 +155,49 @@ public class PermissionService implements PermissionServiceInterface {
 
         return result;
     }
+    
+    /**
+    * Updates an existing permission.
+    * 
+    * This method retrieves the permission by its ID and updates its fields
+    * if the corresponding values are provided in the {@link UpdatePermissionDto}.
+    * 
+    * @param id The ID of the permission to update.
+    * @param updatePermissionDto A DTO containing the new values for the permission.
+    * 
+    * @return The updated {@link PermissionEntity}.
+    * 
+    * @throws NoSuchElementException if the permission with the given ID is not found.
+    */
+    @Override
+    public PermissionEntity updatePermission(Long id,UpdatePermissionDto updatePermissionDto) {
 
-    //This method find by id permission, and return data or empty
+        //Find permission by id and if don't exist throw error
+        PermissionEntity foundPermission = this.findByIdOrFail(id);
+
+        Optional.ofNullable(updatePermissionDto.name)//Valid if name is not null
+            .ifPresent(name ->{//valid if name has value
+                foundPermission.setName(name);
+            });
+
+        Optional.ofNullable(updatePermissionDto.description)//Valid if description is not null
+            .ifPresent(description->{//Valid if description has value
+                foundPermission.setDescription(description);
+            });
+
+        return permissionRepository.save(foundPermission);
+    }
+
+    
+    /**
+    * Finds a permission by its ID.
+    * 
+    * This method searches for a permission entity in the database
+    * and returns an {@link Optional} containing the entity if found.
+    * 
+    * @param id The ID of the permission to find.
+    * @return An {@link Optional} of {@link PermissionEntity}.
+    */
     @Override
     public Optional<PermissionEntity> findById(Long id) {
         return permissionRepository.findById(id);
@@ -167,15 +209,12 @@ public class PermissionService implements PermissionServiceInterface {
     * @return a NoSuchElementException 
     */
     @Override
-    public Optional<PermissionEntity> findByIdOrFail(Long id) {
-        Optional<PermissionEntity> foundPermission = this.findById(id);
-
-        if(foundPermission.isEmpty()){
-            throw new NoSuchElementException("Permission with id = " + id + " not found.");
-        }
-
-        return foundPermission;
+    public PermissionEntity findByIdOrFail(Long id) {
+        return this.findById(id).orElseThrow(
+            ()-> new NoSuchElementException("Permission with id = " + id + " not found.")
+        );
     }
+
 
 
 

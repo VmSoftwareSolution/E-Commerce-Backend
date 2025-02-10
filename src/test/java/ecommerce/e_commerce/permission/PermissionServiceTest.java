@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import ecommerce.e_commerce.permission.dto.CreatePermissionDto;
 import ecommerce.e_commerce.permission.dto.PaginationPermissionDto;
+import ecommerce.e_commerce.permission.dto.UpdatePermissionDto;
 import ecommerce.e_commerce.permission.entity.PermissionEntity;
 import ecommerce.e_commerce.permission.mockData.PermissionMockData;
 import ecommerce.e_commerce.permission.repository.PermissionRepository;
@@ -270,5 +273,52 @@ public class PermissionServiceTest {
     }
 
 
+    @Test
+    public void testUpdatePermissionSuccessfully(){
+        //Initialize variable
+        Long id = 1L;
+        UpdatePermissionDto dto = PermissionMockData.updatePermissionDto();
 
+        //Configure methods when called
+        when(permissionRepository.findById(id))
+            .thenReturn(Optional.of(PermissionMockData.updatePermissionEntity()));
+
+        when(permissionRepository.save(any(PermissionEntity.class)))
+            .thenReturn(PermissionMockData.updatePermissionEntity());           
+
+        //Call method updatePermission
+        PermissionEntity result 
+            = permissionService.updatePermission(id, dto);
+
+        //Asserts
+        assertEquals(dto.name, result.getName());
+        assertEquals(dto.description, result.getDescription());
+
+        //Verify
+        verify(permissionRepository).findById(id);
+    }
+
+    @Test
+    public void testUpdatePermissionNotFound(){
+        //Initialize variable
+        Long id = 1L;
+        UpdatePermissionDto dto = PermissionMockData.updatePermissionDto();
+
+        //Configure method when called
+        when(permissionRepository.findById(id))
+            .thenThrow(new NoSuchElementException(
+                "Permission with id "+ id + " not found.")
+            );
+
+        //Assert
+        assertThrows(
+            NoSuchElementException.class,
+            ()-> permissionService.updatePermission(id, dto)
+        );
+
+        //Verify
+        verify(permissionRepository).findById(id);
+    }
+
+    
 }
