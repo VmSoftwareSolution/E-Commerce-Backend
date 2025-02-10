@@ -112,6 +112,66 @@ public class RolesMockData {
     }
 
     /**
+     * Generates a list of role details in a map format, including associated permissions.
+     * 
+     * @return a {@link List} of {@link Map} containing role information with permissions.
+    */
+    public static List<Map<String,Object>> RolesListDetail(){
+        // Create some mock permissions for the role
+        PermissionEntity permission1 = new PermissionEntity();
+        permission1.setId(1L);
+        permission1.setName("read.all");
+        permission1.setDescription("read all modules");
+        
+        PermissionEntity permission2 = new PermissionEntity();
+        permission2.setId(2L);
+        permission2.setName("write.all");
+
+        List<Map<String, Object>> roles = new ArrayList<>();
+
+
+        //Create some mock to roles with permission
+        Map<String,Object> roles1 = new LinkedHashMap<>();
+
+        roles1.put("id", 1L);
+        roles1.put("name", "admin");
+        roles1.put("description", "administrator roles");
+        roles1.put("permissions", permission1);
+
+        roles.add(roles1);
+
+        return roles;
+    }
+
+    /**
+     * Creates a mock {@link RolesEntity} representing an administrator role.
+     * <p>
+     * The role includes an ID, name, description, and a list of associated permissions.
+     * </p>
+     *
+     * @return a {@link RolesEntity} instance with pre configured mock data.
+    */
+    public static RolesEntity RoleEntityListDetail() {
+        PermissionEntity permission1 = new PermissionEntity();
+        permission1.setId(1L);
+        permission1.setName("read.all");
+        permission1.setDescription("Read all modules");
+    
+        PermissionEntity permission2 = new PermissionEntity();
+        permission2.setId(2L);
+        permission2.setName("write.all");
+        permission2.setDescription("Write all modules");
+    
+        RolesEntity adminRole = new RolesEntity();
+        adminRole.setId(1L);
+        adminRole.setName("Admin");
+        adminRole.setDescription("Administrator role");
+        adminRole.setPermission(Arrays.asList(permission1, permission2));
+    
+        return adminRole;
+    }
+    
+    /**
     * Converts the list of roles from Map representation to RolesEntity objects.
     *
     * @return a list of {@link RolesEntity} populated with mock role data.

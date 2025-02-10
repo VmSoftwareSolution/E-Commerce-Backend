@@ -418,4 +418,49 @@ public class RolesServiceTest {
         verify(rolesRepository).findById(id);
         verify(permissionServiceInterface).findByIdOrFail(dto.permission.get(0));
     }
+
+    @Test
+    public void testFindRolesDetailSuccessfully(){
+        //Initialize variable
+        Long id = 1L;
+
+        //Configure method when called
+        when(rolesRepository.findById(id))
+            .thenReturn(Optional.of(RolesMockData.RoleEntityListDetail()));
+
+        
+
+        //Call method findRolesDetail
+        List<Map<String,Object>> result = rolesService.findRolesDetail(id);
+
+        //Asserts
+        assertNotNull(result);
+        assertEquals(1L, result.get(0).get("id"));
+        assertEquals("Admin", result.get(0).get("name"));
+        assertEquals("Administrator role", result.get(0).get("description"));
+
+        //Verify
+        verify(rolesRepository).findById(id);
+    }
+
+    @Test
+    public void testFindRolesDetailNotFound(){
+        //Initialize variable
+        Long id = 1L;
+
+        //Configure method when called
+        when(rolesRepository.findById(id))
+            .thenThrow(
+                new NoSuchElementException("Roles with id = " + id + " not found")
+            );
+
+        //Asserts
+        assertThrows(
+            NoSuchElementException.class,
+            ()-> rolesService.findRolesDetail(id)
+        );
+
+        //Verify
+        verify(rolesRepository).findById(id);
+    }
 }
